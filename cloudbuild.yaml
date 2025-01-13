@@ -11,3 +11,5 @@ steps:
      - --source=./
      - --trigger-http
      - --memory=512MB
+  options:
+    logging: CLOUD_LOGGING_ONLY
