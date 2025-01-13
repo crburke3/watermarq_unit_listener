@@ -73,20 +73,23 @@ def filter_units_for_search(search: RoomSearch, removed_units, added_units, pric
 
 
 def generate_message(search: RoomSearch, removed_units, added_units, price_changed_units):
+    removed_list = sorted(list(removed_units))
+    added_list = sorted(list(added_units))
+    price_changed = sorted(list(price_changed_units))
     message = f"Hey {search.name}. We've got a watermarq room update 👀\n"
     if len(removed_units) > 0:
         message += "the following units have been removed from watermarqs website 😥\n"
-        message += "\n".join(f"• {unit_description(obj)}" for obj in removed_units)
+        message += "\n".join(f"• {unit_description(obj)}" for obj in removed_list)
         message += "\n"
 
     if len(added_units) > 0:
         message += "the following units have been added to watermarqs website 👏\n"
-        message += "\n".join(f"• {unit_description(obj)}" for obj in added_units)
+        message += "\n".join(f"• {unit_description(obj)}" for obj in added_list)
         message += "\n"
 
     if len(price_changed_units) > 0:
         message += "the following units have had their prices changed 🤔\n"
-        message += "\n:".join(f"• {unit_description(obj)}" for obj in price_changed_units)
+        message += "\n:".join(f"• {unit_description(obj)}" for obj in price_changed)
         message += "\n"
 
     return message

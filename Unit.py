@@ -73,3 +73,7 @@ class Unit:
         """Hash based on unit_number and price."""
         return hash((self.unit_number, self.price))
 
+    def __lt__(self, other):
+        if isinstance(other, Unit):
+            return int(self.unit_number) < int(other.unit_number)
+        return False
