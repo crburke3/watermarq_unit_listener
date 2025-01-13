@@ -1,4 +1,5 @@
 import comms_help
+import firebase_storing
 import helpers
 import local_storing
 import web_calls as wc
@@ -13,7 +14,9 @@ MIN_SECS_BETWEEN_RUNS = 1
 
 def run_watermarq_messaging(args):
     # Load existing units from local storage
-    last_updated, existing_units = local_storing.load_units_from_json()
+    print("loading existing data...")
+    last_updated, existing_units = firebase_storing.load_units_from_firebase()
+    print("data loaded...")
     curr_time = datetime.utcnow()
     if last_updated:
         seconds_since_last_run = (curr_time - last_updated).total_seconds()
@@ -59,4 +62,4 @@ def run_watermarq_messaging(args):
         for phone in search.phones:
             comms_help.send_message(phone, message)
 
-    local_storing.save_units_to_json(new_units)
+    firebase_storing.save_units_to_firebase(new_units)
