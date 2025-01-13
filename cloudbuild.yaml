@@ -1,0 +1,13 @@
+steps:
+# Builds the inference worker
+ - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+   args:
+     - gcloud  # dont worry bout this
+     - functions  # or this
+     - deploy  # or this
+     - watermarq_listener # this is the name of the function as listed in the GCF functions page. To deploy a new one, you need to create the funciton in GCF before pushing
+     - --region=us-central1
+     - --runtime=python310  # python version
+     - --source=./
+     - --trigger-http
+     - --memory=512MB
