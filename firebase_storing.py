@@ -9,11 +9,11 @@ import json
 if not firebase_admin._apps:
     service_account_path = "serviceAccount.json"
     if os.path.exists(service_account_path):
-        print("The shnitserviceAccount.json file exists.")
+        print("The serviceAccount.json file exists.")
         cred = credentials.Certificate(service_account_path)
         firebase_admin.initialize_app(cred)
     else:
-        print("The shnitserviceAccount.json file does not exist. Initializing from ENV")
+        print("The serviceAccount.json file does not exist. Initializing from ENV")
         # Retrieve the Firebase account details from the .env file
         firebase_account = os.getenv('firebase_account')
         if firebase_account:
