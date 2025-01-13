@@ -19,9 +19,9 @@ def run_watermarq_messaging(args):
     curr_time = datetime.utcnow()
     if last_updated:
         seconds_since_last_run = (curr_time - last_updated).total_seconds()
-        if seconds_since_last_run < MIN_SECS_BETWEEN_RUNS:
-            print(f"Skipping run, too soon. {seconds_since_last_run} seconds between")
-            return 201, ""
+        # if seconds_since_last_run < MIN_SECS_BETWEEN_RUNS:
+            # print(f"Skipping run, too soon. {seconds_since_last_run} seconds between")
+            # return 201, ""
     else:
         print("No unit json file, assuming first time running.")
 
