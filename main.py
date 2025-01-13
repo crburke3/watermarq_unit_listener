@@ -8,4 +8,4 @@ def check_units(args):
     except Exception as e:
         err_message = f"Something failed: {e}"
         comms_help.send_telegram_message("", err_message)
-        raise e
+        return {"error": err_message}, 400

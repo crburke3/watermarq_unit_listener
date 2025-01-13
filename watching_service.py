@@ -21,7 +21,7 @@ def run_watermarq_messaging(args):
         seconds_since_last_run = (curr_time - last_updated).total_seconds()
         # if seconds_since_last_run < MIN_SECS_BETWEEN_RUNS:
             # print(f"Skipping run, too soon. {seconds_since_last_run} seconds between")
-            # return 201, ""
+            # return {}, 201
     else:
         print("No unit json file, assuming first time running.")
 
@@ -54,4 +54,4 @@ def run_watermarq_messaging(args):
             comms_help.send_message(phone, message)
 
     firebase_storing.save_units_to_firebase(new_units)
-    return 200, ""
+    return {}, 200
