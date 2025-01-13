@@ -1,15 +1,32 @@
 from datetime import datetime
 import helpers
 from Unit import Unit
-
+import os
 import firebase_admin
-from firebase_admin import credentials
 from firebase_admin import credentials, firestore
-
+import json
 # Initialize Firebase if not already initialized
 if not firebase_admin._apps:
-    cred = credentials.Certificate("serviceAccount.json")
-    firebase_admin.initialize_app(cred)
+    service_account_path = "serviceAccount.json"
+    if os.path.exists(service_account_path):
+        print("The shnitserviceAccount.json file exists.")
+        cred = credentials.Certificate(service_account_path)
+        firebase_admin.initialize_app(cred)
+    else:
+        print("The shnitserviceAccount.json file does not exist. Initializing from ENV")
+        # Retrieve the Firebase account details from the .env file
+        firebase_account = os.getenv('firebase_account')
+        if firebase_account:
+            # If the environment variable exists, initialize from it
+            try:
+                # Assuming firebase_account contains the JSON string for credentials
+                cred = credentials.Certificate(json.loads(firebase_account))
+                firebase_admin.initialize_app(cred)
+                print("Firebase initialized from ENV.")
+            except ValueError as e:
+                print(f"Error initializing Firebase from ENV: {e}")
+        else:
+            print("No firebase_account found in .env. Cannot initialize Firebase.")
 
 
 firebase_db_path = "/old_units"
