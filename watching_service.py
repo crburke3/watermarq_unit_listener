@@ -54,3 +54,4 @@ def run_watermarq_messaging(args):
             comms_help.send_message(phone, message)
 
     firebase_storing.save_units_to_firebase(new_units)
+    return 200, ""
