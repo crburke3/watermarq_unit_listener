@@ -1,0 +1,3 @@
+from watching_service import run_watermarq_messaging
+
+run_watermarq_messaging(None)

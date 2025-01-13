@@ -1,3 +1,4 @@
+import comms_help
 import helpers
 import local_storing
 import web_calls as wc
@@ -55,6 +56,7 @@ def run_watermarq_messaging(args):
             continue
         message = helpers.generate_message(search, search_removed_units, search_added_units, search_price_changed_units)
         print(f"sending message to {search.name}")
-        print(message)
+        for phone in search.phones:
+            comms_help.send_message(phone, message)
 
     local_storing.save_units_to_json(new_units)
