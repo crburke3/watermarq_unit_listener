@@ -3,6 +3,7 @@ from typing import List
 
 import helpers
 from RoomSearch import RoomSearch
+from RunLog import RunLog
 from Unit import Unit
 import os
 import firebase_admin
@@ -118,6 +119,23 @@ def load_room_searches() -> List[RoomSearch]:
         print("No room searches found in Firestore.")
         return []
 
+
+def save_run_log_to_firebase(successful: bool, error: str=None):
+    collection_ref = db.collection("watermarq_system").document("run_logs").collection('logs')
+    log = RunLog(timestamp=datetime.now(), success=successful, error_message=error)
+    log_data = log.to_dict()
+    collection_ref.add(log_data)
+    print("Run log saved to Firebase.")
+
+
+def get_most_recent_run_log():
+    collection_ref = db.collection("watermarq_system").document("run_logs").collection('logs')
+    query = collection_ref.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
+    results = query.stream()
+    for doc in results:
+        log_data = doc.to_dict()
+        return RunLog.from_dict(log_data)
+    return None
 
 # save_room_searches([
 #             RoomSearch(

@@ -7,7 +7,6 @@ from RoomSearch import RoomSearch
 from Unit import Unit
 from typing import Set
 from datetime import datetime
-import pytz
 
 
 MIN_SECS_BETWEEN_RUNS = 1
@@ -56,4 +55,4 @@ def run_watermarq_messaging(args):
             comms_help.send_message(phone, message)
 
     firebase_storing.save_units_to_firebase(new_units)
-    return {}, 200
+    return {"message": "successful scrapage"}, 200
