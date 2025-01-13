@@ -103,9 +103,18 @@ def unit_description(unit: Unit):
     desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else ""
     desc += f"  Corner Unit 🥇\n" if unit.corner_type else ""
     desc += f"  View Ranking: {int(unit.view_rank) * '⭐'}\n" if unit.view_rank else ""
-    desc += f"  View Facing: {unit.primary_exterior_face}" if unit.primary_exterior_face else ""
+    desc += f"  View Facing: {unit.primary_exterior_face} {view_emoji(unit)}" if unit.primary_exterior_face else ""
     desc += f"  {unit.notes}" if unit.notes else ""
     return desc
+
+
+def view_emoji(unit: Unit):
+    view = unit.primary_exterior_face.lower()
+    if view == 'townhome': return '🏘️'
+    if view == 'street': return '🚥'
+    if view == 'pool': return '🏊'
+    if view == 'parking lot': return '🚗'
+    return ''
 
 
 def get_current_cst_date():
