@@ -1,8 +1,7 @@
-
 class Unit:
     def __init__(self, unit_number, price=None, is_exterior_facing=None, primary_exterior_face=None,
                  is_corner_unit=None, corner_type=None, size_rank=None, view_rank=None, notes=None,
-                 floor_plan_type=None):
+                 floor_plan_type=None, availability_date=None):
         self.unit_number = unit_number
         self.price = price
         self.is_exterior_facing = is_exterior_facing
@@ -12,15 +11,21 @@ class Unit:
         self.size_rank = size_rank
         self.view_rank = view_rank
         self.notes = notes
-        self.floor_plan_type=floor_plan_type
+        self.floor_plan_type = floor_plan_type
+        self.availability_date = availability_date  # new property
 
     def num_rooms(self):
-        if not self.floor_plan_type: return None
+        if not self.floor_plan_type:
+            return None
         plan_type = self.floor_plan_type.lower()
-        if "studio" in plan_type: return 1
-        if "one bedroom" in plan_type: return 1
-        if "two bedroom" in plan_type: return 2
-        if "three bedroom" in plan_type: return 3
+        if "studio" in plan_type:
+            return 1
+        if "one bedroom" in plan_type:
+            return 1
+        if "two bedroom" in plan_type:
+            return 2
+        if "three bedroom" in plan_type:
+            return 3
         return None
 
     def __repr__(self):
@@ -29,6 +34,8 @@ class Unit:
         emojis += "🥇" if self.is_corner_unit else ""
         val = f"{self.unit_number}{emojis} {self.price}"
         val += f" {self.num_rooms()} rooms" if self.floor_plan_type else ""
+        # if self.availability_date:
+        #     val += f" Available on: {self.availability_date}"  # display availability date if present
         return val
 
     @classmethod
@@ -43,7 +50,8 @@ class Unit:
             view_rank=json_data['view_rank'],
             notes=json_data['notes'],
             price=json_data.get('price', None),
-            floor_plan_type=json_data.get('floor_plan_type', None)
+            floor_plan_type=json_data.get('floor_plan_type', None),
+            availability_date=json_data.get('availability_date', None)  # load availability date if it exists
         )
 
     def to_dict(self):
@@ -60,7 +68,8 @@ class Unit:
             'size_rank': self.size_rank,
             'view_rank': self.view_rank,
             'notes': self.notes,
-            'floor_plan_type': self.floor_plan_type
+            'floor_plan_type': self.floor_plan_type,
+            'availability_date': self.availability_date  # add availability date to the dictionary
         }
 
     def __eq__(self, other):

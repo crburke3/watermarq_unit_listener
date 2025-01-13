@@ -98,6 +98,7 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
 def unit_description(unit: Unit):
     desc = f"{unit.unit_number} | {unit.price}\n"
     desc += f"  {unit.floor_plan_type}\n"
+    desc += f"  Availability: {unit.availability_date}\n"
     desc += f"  Num Rooms: {unit.num_rooms()}\n" if unit.floor_plan_type else ""
     desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else ""
     desc += f"  Corner Unit 🥇\n" if unit.corner_type else ""

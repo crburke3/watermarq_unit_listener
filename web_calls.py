@@ -130,7 +130,8 @@ def getUnitListByFloor(floorPlan: FloorPlan, moveinDate, site_id="1682", templat
                 if "Unit Number" not in row_text[0]: continue
                 number = row_text[0].replace("Unit Number", "")
                 price = row_text[1].replace("Starting At", "")
-                unit_for_row = Unit(unit_number=number, price=price)
+                availabilty = row_text[2].replace("Availability", "")
+                unit_for_row = Unit(unit_number=number, price=price, availability_date=availabilty)
                 helpers.add_csv_data(unit_for_row)
                 unit_for_row.floor_plan_type = floorPlan.type
                 units.append(unit_for_row)
