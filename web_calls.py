@@ -52,7 +52,9 @@ def getAvailableFloorplans() -> [FloorPlan]:
     soup = BeautifulSoup(response.text, 'html.parser')
     parent_div = soup.find('div', id='all_available_tab')
     if not parent_div:
-        raise Exception('failed to find parent div from floor plans')
+        print("Failed to find parent div. heres where we were trying to find it")
+        print(response.text)
+        raise Exception(f'failed to find parent div from floor plans. web resp: {response.text}')
     # Find all div elements inside the parent div
     div_elements = parent_div.find_all('div')
     # parse each floor plan
