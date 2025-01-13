@@ -14,9 +14,8 @@ MIN_SECS_BETWEEN_RUNS = 1
 
 def run_watermarq_messaging(args):
     # Load existing units from local storage
-    print("loading existing data...")
+    searches: [RoomSearch] = firebase_storing.load_room_searches()
     last_updated, existing_units = firebase_storing.load_units_from_firebase()
-    print("data loaded...")
     curr_time = datetime.utcnow()
     if last_updated:
         seconds_since_last_run = (curr_time - last_updated).total_seconds()
@@ -43,14 +42,6 @@ def run_watermarq_messaging(args):
     print(f"Units added to the web: {added_units}")
     print(f"Units with price differences: {price_changed_units}")
 
-    searches: [RoomSearch] = [
-            RoomSearch(
-                name="christian and jake",
-                phones=['+17048062009'],
-                num_rooms=[2, 3],
-                only_exterior=True
-            )
-        ]
 
     for search in searches:
         search_removed_units, search_added_units, search_price_changed_units = helpers.filter_units_for_search(search, removed_units, added_units, price_changed_units)

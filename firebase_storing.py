@@ -1,10 +1,14 @@
 from datetime import datetime
+from typing import List
+
 import helpers
+from RoomSearch import RoomSearch
 from Unit import Unit
 import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 import json
+
 # Initialize Firebase if not already initialized
 if not firebase_admin._apps:
     service_account_path = "serviceAccount.json"
@@ -35,6 +39,7 @@ ref = db.collection("watermarq_system").document("old_units")
 
 
 def load_units_from_firebase():
+    print("loading units from firebase...")
     try:
         # Fetch data from Firebase Realtime Database
         doc = ref.get()
@@ -83,3 +88,48 @@ def save_units_to_firebase(units):
         print(f"Error saving data to Firebase: {e}")
 
 
+def save_room_searches(room_searches: List[RoomSearch]):
+    # Reference to the "watermarq_system" collection and "room_searches" document
+    doc_ref = db.collection("watermarq_system").document("room_searches")
+    room_search_dicts = [room_search.to_dict() for room_search in room_searches]
+    doc_ref.set({
+        'room_searches': room_search_dicts
+    })
+    print(f"Successfully saved {len(room_search_dicts)} room searches to Firestore.")
+
+
+def load_room_searches() -> List[RoomSearch]:
+    # Reference to the "watermarq_system" collection and "room_searches" document
+    doc_ref = db.collection("watermarq_system").document("room_searches")
+
+    # Get the document
+    doc = doc_ref.get()
+
+    if doc.exists:
+        # Extract room_searches data
+        room_searches_data = doc.to_dict().get('room_searches', [])
+
+        # Convert each dictionary back to a RoomSearch instance
+        room_searches = [RoomSearch.from_dict(data) for data in room_searches_data]
+
+        print(f"Successfully loaded {len(room_searches)} room searches.")
+        return room_searches
+    else:
+        print("No room searches found in Firestore.")
+        return []
+
+
+# save_room_searches([
+#             RoomSearch(
+#                 name="christian and jake",
+#                 phones=['+17048062009'],
+#                 num_rooms=[2, 3],
+#                 only_exterior=True
+#             ),
+#             RoomSearch(
+#                 name="Drew and Marlee",
+#                 phones=['+17048062009'],
+#                 num_rooms=[1],
+#                 only_exterior=False
+#             ),
+#         ])
