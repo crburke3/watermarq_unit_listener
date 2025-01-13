@@ -7,6 +7,7 @@ from RoomSearch import RoomSearch
 from Unit import Unit
 from typing import Set
 from datetime import datetime
+import pytz
 
 
 MIN_SECS_BETWEEN_RUNS = 1
@@ -30,7 +31,8 @@ def run_watermarq_messaging(args):
     floor_plans = wc.getAvailableFloorplans()
     for floor_plan in floor_plans:
         print(f"Getting available units for floorPlan: {floor_plan.name}...", end="", flush=True)
-        currently_available_units: Set[Unit] = wc.getUnitListByFloor(floorPlan=floor_plan, moveinDate="12 January 2025")
+        move_in_date = helpers.get_current_cst_date()
+        currently_available_units: Set[Unit] = wc.getUnitListByFloor(floorPlan=floor_plan, moveinDate=move_in_date)
         print(f"  {currently_available_units} available")
         new_units.update(currently_available_units)
 

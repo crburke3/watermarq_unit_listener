@@ -3,3 +3,4 @@ requests==2.32.3
 python-dotenv
 beautifulsoup4
 firebase-admin
+pytz

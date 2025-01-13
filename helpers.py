@@ -1,4 +1,7 @@
 import csv
+from datetime import datetime
+
+import pytz
 
 from RoomSearch import RoomSearch
 from Unit import Unit
@@ -99,3 +102,11 @@ def unit_description(unit: Unit):
     desc += f"  View Facing: {unit.primary_exterior_face}" if unit.primary_exterior_face else ""
     desc += f"  {unit.notes}" if unit.notes else ""
     return desc
+
+
+def get_current_cst_date():
+    cst = pytz.timezone('US/Central')
+    current_time_cst = datetime.now(cst)
+    # Format the date as "12 January 2025"
+    formatted_date = current_time_cst.strftime("%d %B %Y")
+    return formatted_date
