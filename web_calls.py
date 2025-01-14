@@ -1,10 +1,7 @@
-import requests
 import re
 from bs4 import BeautifulSoup
-import json
 import helpers
 from Unit import Unit
-from base64 import b64decode
 import random
 import requests
 

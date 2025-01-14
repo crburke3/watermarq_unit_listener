@@ -4,7 +4,6 @@ from watching_service import run_watermarq_messaging
 
 
 def check_units(args):
-    firebase_storing.save_run_log_to_firebase(successful=False, error="FAKE")
     latest_log = firebase_storing.get_most_recent_run_log()
     try:
         result = run_watermarq_messaging(args)
