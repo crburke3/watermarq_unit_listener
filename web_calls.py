@@ -74,8 +74,9 @@ def getFloorPlansHtml() -> str:
 
 def getFloorPlansHtmlProxy() -> str:
     proxies = load_proxy_list()
-    proxy_to_use = random_element = random.choice(proxies)
+    proxy_to_use = random.choice(proxies)
     proxy_url = f"http://{proxy_to_use}"
+    print(f"using proxy to gather floor plans: {proxy_url}")
     url = "https://app.repli360.com/public/admin/template-render"
     payload = {
       "site_id": "1682",
