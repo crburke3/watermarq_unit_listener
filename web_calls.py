@@ -1,9 +1,12 @@
 import requests
 import re
 from bs4 import BeautifulSoup
-
+import json
 import helpers
 from Unit import Unit
+from base64 import b64decode
+import random
+import requests
 
 
 class FloorPlan:
@@ -24,6 +27,25 @@ class FloorPlan:
         return f"FloorPlan(name={self.name!r}, id={self.id!r})"
 
 
+def load_proxy_list() -> [str]:
+    return [
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.166.29:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.169.117:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.92:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.97:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.112:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.113:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.116:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.117:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.118:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.167.209:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.170.107:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.90.37:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.170:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.211:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.116.13:a9iprakm5w98@brd.superproxy.io:3333"
+  ]
+
 def extract_parameters(onclick_string):
     match = re.search(r"getUnitListByFloor\((.*?)\);", onclick_string)
     if match:
@@ -35,7 +57,7 @@ def extract_parameters(onclick_string):
     return []
 
 
-def getAvailableFloorplans() -> [FloorPlan]:
+def getFloorPlansHtml() -> str:
     url = "https://app.repli360.com/public/admin/template-render"
     payload = {
         "site_id": "1682",
@@ -45,16 +67,42 @@ def getAvailableFloorplans() -> [FloorPlan]:
         "source": "",
         "property_id": ""
     }
+    print(f"requesting floor plans: {url}")
     response = requests.post(url, data=payload)
     if response.status_code != 200:
-        raise Exception(f'Failed to get flood plans: {response.status_code} | {response.text}')
+        raise Exception(f'Failed to get floor plans: {response.status_code} | {response.text}')
         # Parse the HTML response using BeautifulSoup
-    soup = BeautifulSoup(response.text, 'html.parser')
+    return response.text
+
+
+def getFloorPlansHtmlProxy() -> str:
+    proxies = load_proxy_list()
+    proxy_to_use = random_element = random.choice(proxies)
+    proxy_url = f"http://{proxy_to_use}"
+    url = "https://app.repli360.com/public/admin/template-render"
+    payload = {
+      "site_id": "1682",
+      "action": "",
+      "ready_script": "dom_load",
+      "template_type": "",
+      "source": "",
+      "property_id": ""
+    }
+    response = requests.post(url, data=payload, proxies={"http": proxy_url, "https": proxy_url})
+    if response.status_code != 200:
+        raise Exception(f'Failed to get floor plans: {response.status_code} | {response.text}')
+    return response.text
+
+
+def getAvailableFloorplans() -> [FloorPlan]:
+    # html = getFloorPlansHtml()
+    html = getFloorPlansHtmlProxy()
+    soup = BeautifulSoup(html, 'html.parser')
     parent_div = soup.find('div', id='all_available_tab')
     if not parent_div:
         print("Failed to find parent div. heres where we were trying to find it")
-        print(response.text)
-        raise Exception(f'failed to find parent div from floor plans. web resp: {response.text}')
+        print(html)
+        raise Exception(f'failed to find parent div from floor plans. web resp: {html}')
     # Find all div elements inside the parent div
     div_elements = parent_div.find_all('div')
     # parse each floor plan
