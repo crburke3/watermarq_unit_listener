@@ -148,8 +148,9 @@ save_room_searches([
                 only_exterior=True
             ),
             RoomSearch(
-                name="Andrea",
-                phones=["+19806364444"],
+                name="Andrea & Drew",
+                phones=["+19806364444",
+                        "+19198277295"],
                 num_rooms=[1],
                 only_exterior=False
             )
