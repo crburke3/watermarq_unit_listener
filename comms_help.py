@@ -2,7 +2,6 @@ import requests
 from dotenv import load_dotenv
 import os
 from twilio.rest import Client
-import json
 from pprint import pprint
 
 
@@ -25,9 +24,15 @@ def send_text(number: str, message: str):
         account_sid = os.getenv('twilio_sid')
         auth_token = os.getenv('twilio_auth_token')
         client = Client(account_sid, auth_token)
-        resp = client.messages.create(to=number, from_="+17042705208", body=message)
-        print(f"successfully sent text: {resp.sid} | {resp.status}")
-        pprint(vars(resp))
+
+        # Split message into chunks of 1500 characters if necessary
+        message_chunks = [message[i:i+1500] for i in range(0, len(message), 1500)]
+
+        for chunk in message_chunks:
+            resp = client.messages.create(to=number, from_="+17042705208", body=chunk)
+            print(f"Successfully sent text: {resp.sid} | {resp.status}")
+            # pprint(vars(resp))
+
     except Exception as e:
         print(f"Failed to send text: {e}")
 
