@@ -51,8 +51,9 @@ def run_watermarq_messaging(args):
             continue
         message = helpers.generate_message(search, search_removed_units, search_added_units, search_price_changed_units)
         print(f"sending message to {search.name}")
+        comms_help.send_telegram_message("", message)
         for phone in search.phones:
-            comms_help.send_message(phone, message)
+            comms_help.send_text(phone, message)
 
     firebase_storing.save_units_to_firebase(new_units)
     return {"message": "successful scrapage"}, 200

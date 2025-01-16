@@ -9,7 +9,7 @@ def check_units(args):
         result = run_watermarq_messaging(args)
         if latest_log:
             if latest_log.error_message:
-                comms_help.send_message("", "System functional again lfg")
+                comms_help.send_telegram_message("", "System functional again lfg")
         firebase_storing.save_run_log_to_firebase(successful=True)
         return result
     except Exception as e:
