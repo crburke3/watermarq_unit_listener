@@ -24,15 +24,29 @@ def send_telegram_message(number: str, message: str):
         print(f"Failed to send message. Error: {response.status_code} | {response.text}")
 
 
-def send_text(number: str, message: str):
+def send_text(number: str, message: str, chunk_size: int = 800):
     try:
-        # Split message into chunks of 1500 characters if necessary
-        message_chunks = [message[i:i+1500] for i in range(0, len(message), 1500)]
+        # Split message into chunks respecting newlines
+        message_chunks = []
+        start = 0
+        while start < len(message):
+            end = min(start + chunk_size, len(message))
+            chunk = message[start:end]
 
+            # Find the last newline within the chunk
+            last_newline = chunk.rfind('\n')
+            if last_newline != -1 and end < len(message):  # Split at newline
+                split_point = start + last_newline + 1
+            else:  # No newline or last chunk
+                split_point = end
+
+            message_chunks.append(message[start:split_point].rstrip())
+            start = split_point
+
+        # Send each chunk using Twilio
         for chunk in message_chunks:
             resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
-            print(f"[TEXT:Sent] {number} | {message} | {resp.sid} | {resp.status}")
-            # pprint(vars(resp))
+            print(f"[TEXT:Sent] {number} | {chunk} | {resp.sid} | {resp.status}")
 
     except Exception as e:
         print(f"Failed to send text: {e}")
