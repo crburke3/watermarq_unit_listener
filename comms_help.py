@@ -31,7 +31,7 @@ def send_text(number: str, message: str):
 
         for chunk in message_chunks:
             resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
-            print(f"Successfully sent text: {resp.sid} | {resp.status}")
+            print(f"[TEXT:Sent] {number} | {resp} | {resp.sid} | {resp.status}")
             # pprint(vars(resp))
 
     except Exception as e:
@@ -51,4 +51,4 @@ def send_image(number: str, message: str, image_url: str):
         to=number,  # Recipient's phone number
         media_url=[image_url]  # URL of the media file
     )
-    print(f"Successfully sent image: {resp.sid} | {resp.status} | {image_url}")
+    print(f"[TEXT:sent] sent image: {resp.sid} | {resp.status} | {image_url}")
