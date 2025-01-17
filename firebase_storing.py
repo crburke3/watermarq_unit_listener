@@ -93,12 +93,15 @@ def save_units_to_firebase(units):
 
 def save_room_searches(room_searches: List[RoomSearch]):
     # Reference to the "watermarq_system" collection and "room_searches" document
-    doc_ref = db.collection("watermarq_system").document("room_searches")
-    room_search_dicts = [room_search.to_dict() for room_search in room_searches]
-    doc_ref.set({
-        'room_searches': room_search_dicts
-    })
-    print(f"Successfully saved {len(room_search_dicts)} room searches to Firestore.")
+    # doc_ref = db.collection("watermarq_system").document("room_searches")
+    # room_search_dicts = [room_search.to_dict() for room_search in room_searches]
+    # doc_ref.set({
+    #     'room_searches': room_search_dicts
+    # })
+    # print(f"Successfully saved {len(room_search_dicts)} room searches to Firestore.")
+    for search in room_searches:
+        save_search_args(search.phones[0], room_counts=search.num_rooms, only_exterior=search.only_exterior, name=search.name)
+
 
 
 def load_room_searches() -> List[RoomSearch]:
@@ -134,7 +137,7 @@ def get_most_recent_run_log():
     return None
 
 
-def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior: bool=None, max_price:int=None):
+def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior: bool=None, max_price:int=None, name:str = None):
     args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
     doc_ref = args_ref.document(phone_number)
     search_doc = doc_ref.get()
@@ -150,6 +153,8 @@ def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior
         search.only_exterior = only_exterior
     if max_price:
         print("need to set max price up")
+    if name:
+        search.name = name
 
     search_export = search.to_dict()
     doc_ref.set(search_export)
@@ -173,35 +178,36 @@ def delete_search(phone_number: str):
     doc_ref = args_ref.document(phone_number)
     doc_ref.delete()
 
-# save_room_searches([
-#             RoomSearch(
-#                 name="christian and jake",
-#                 phones=['+17048062009',
-#                         '+19802152772'],
-#                 num_rooms=[2, 3],
-#                 only_exterior=True
-#             ),
-#             RoomSearch(
-#                 name="Andrea & Drew",
-#                 phones=["+19806364444",
-#                         "+19198277295"],
-#                 num_rooms=[1],
-#                 only_exterior=False
-#             ),
-#             RoomSearch(
-#                 name="Acacia",
-#                 phones=[
-#                     '+14256916189'
-#                 ],
-#                 num_rooms=[1],
-#                 only_exterior=False
-#             ),
-#             RoomSearch(
-#                 name="Marcus",
-#                 phones=[
-#                     '+12537364084'
-#                 ],
-#                 num_rooms=[1],
-#                 only_exterior=False
-#             )
-#         ])
+
+save_room_searches([
+            RoomSearch(
+                name="christian and jake",
+                phones=['+17048062009',
+                        '+19802152772'],
+                num_rooms=[2, 3],
+                only_exterior=True
+            ),
+            RoomSearch(
+                name="Andrea & Drew",
+                phones=["+19806364444",
+                        "+19198277295"],
+                num_rooms=[1],
+                only_exterior=False
+            ),
+            RoomSearch(
+                name="Acacia",
+                phones=[
+                    '+14256916189'
+                ],
+                num_rooms=[1],
+                only_exterior=False
+            ),
+            RoomSearch(
+                name="Marcus",
+                phones=[
+                    '+12537364084'
+                ],
+                num_rooms=[1],
+                only_exterior=False
+            )
+        ])

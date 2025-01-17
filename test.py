@@ -1,3 +1,4 @@
+import comms_help
 import main
 from main import check_units
 from watching_service import run_watermarq_messaging
@@ -50,4 +51,14 @@ def test_restart():
     message = 'RESTART'
     message_type = primary_reception.find_message_type(message)
     assert message_type == primary_reception.MessageType.RESTART
+    resp = primary_reception.handle_reception(phone, message)
+
+def test_mms():
+    comms_help.send_image(phone, "WOO22", "https://storage.googleapis.com/public-random/watermarq_map.png")
+
+
+def test_building():
+    message = 'BUILDING'
+    message_type = primary_reception.find_message_type(message)
+    assert message_type == primary_reception.MessageType. BUILDING
     resp = primary_reception.handle_reception(phone, message)

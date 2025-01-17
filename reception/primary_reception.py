@@ -11,6 +11,7 @@ class MessageType(Enum):
     UNKNOWN="UNKNOWN"
     UNSUBSCRIBE="UNSUBSCRIBE"
     RESTART="RESTART"
+    BUILDING="BUILDING"
 
 
 def handle_subscription(from_number: str):
@@ -32,6 +33,8 @@ def find_message_type(message: str):
         return MessageType.UNSUBSCRIBE
     if lower_message == 'restart':
         return MessageType.RESTART
+    if lower_message == "building":
+        return MessageType.BUILDING
 
     pattern = r'^\d+(\s*,\s*\d+)*$'
     is_room_count = bool(re.match(pattern, stripped_msg))
@@ -95,6 +98,12 @@ def handle_restart(from_number: str):
     return response
 
 
+def handle_building(from_number: str):
+    img_url = "https://storage.googleapis.com/public-random/watermarq_map.png"
+    message = "heres the building's map"
+    comms_help.send_image(from_number, message, img_url)
+
+
 def handle_reception(from_number: str, raw_message: str):
     message = raw_message.lower()
     message_type = find_message_type(message)
@@ -105,11 +114,15 @@ def handle_reception(from_number: str, raw_message: str):
         response = handle_unsubscribe(from_number)
     if message_type == MessageType.RESTART:
         response = handle_restart(from_number)
+    if message_type == MessageType.BUILDING:
+        handle_building(from_number)
     if message_type == MessageType.ROOM_COUNT:
         response = handle_room_count(from_number, message)
     if message_type == MessageType.ONLY_EXTERIOR:
         response = handle_only_exterior(from_number, message)
         comms_help.send_message(from_number, response)
         response = handle_initial_search(from_number)
+        comms_help.send_message(from_number, response)
+        response = "oh yeah you can send the message 'BUILDING' and ill text you a picture of the room layouts"
     comms_help.send_message(from_number, response)
     return response

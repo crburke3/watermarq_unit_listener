@@ -8,6 +8,10 @@ CHRISTIANS_NUMBER = "+17048062009"
 
 load_dotenv()
 
+account_sid = os.getenv('twilio_sid')
+auth_token = os.getenv('twilio_auth_token')
+twilio_client = Client(account_sid, auth_token)
+
 
 def send_telegram_message(number: str, message: str):
     bot_token = os.getenv('telegram_bot_token')
@@ -22,15 +26,11 @@ def send_telegram_message(number: str, message: str):
 
 def send_text(number: str, message: str):
     try:
-        account_sid = os.getenv('twilio_sid')
-        auth_token = os.getenv('twilio_auth_token')
-        client = Client(account_sid, auth_token)
-
         # Split message into chunks of 1500 characters if necessary
         message_chunks = [message[i:i+1500] for i in range(0, len(message), 1500)]
 
         for chunk in message_chunks:
-            resp = client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
+            resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
             print(f"Successfully sent text: {resp.sid} | {resp.status}")
             # pprint(vars(resp))
 
@@ -42,3 +42,13 @@ def send_message(number: str, message: str):
     send_text(number, message)
     send_telegram_message(number, message)
 
+
+def send_image(number: str, message: str, image_url: str):
+    send_telegram_message(number, message + f"\n\n\n{image_url}")
+    resp = twilio_client.messages.create(
+        body=message,  # Message content
+        from_=TWILIO_NUMBER,  # Your Twilio number
+        to=number,  # Recipient's phone number
+        media_url=[image_url]  # URL of the media file
+    )
+    print(f"Successfully sent image: {resp.sid} | {resp.status} | {image_url}")
