@@ -16,7 +16,8 @@ class MessageType(Enum):
 
 def handle_subscription(from_number: str):
     response = "So you've heard about me 👀\n"
-    response += "I'm here to let you know when rooms open up. Standard text and mms rates apply 💅\n"
+    response += "I'm here to let you know when rooms open up. Standard text and mms rates apply 💅\n\n"
+    response += "Dont forget to tell them Christian Burke sent you if you end up signing \n\n"
     response += 'How many rooms are you looking for? (1...3)\n\n'
     response += 'Ex: 1\n'
     response += "Ex: 1,2,3\n"
