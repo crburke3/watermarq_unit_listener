@@ -109,6 +109,7 @@ def handle_building(from_number: str):
 
 def handle_reception(from_number: str, raw_message: str):
     print(f"[TEXT:Recieved] {from_number} | {raw_message}")
+    comms_help.send_message("", f"RECIEVED|{from_number}: {raw_message}")
     message = raw_message.lower()
     message_type = find_message_type(message)
     response = 'try again plz...'
