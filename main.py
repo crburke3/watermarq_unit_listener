@@ -14,14 +14,17 @@ def check_units(request):
     Google Cloud Function to forward incoming SMS via Twilio.
     """
     # Log the request URL and method
-    print(f"Request URL: {request.url}")
-    print(f"Request method: {request.method}")
-    print(f"Request headers: {dict(request.headers)}")
+    try:
+        print(f"Request URL: {request.url}")
+        print(f"Request method: {request.method}")
+        print(f"Request headers: {dict(request.headers)}")
 
-    # Log the request body (use request.get_data for raw payload)
-    print(f"Request body: {request.get_data(as_text=True)}")
+        # Log the request body (use request.get_data for raw payload)
+        print(f"Request body: {request.get_data(as_text=True)}")
+    except Exception as e:
+        print(f"Failed to parse body: {request}")
+
     latest_log = firebase_storing.get_most_recent_run_log()
-
     if "from_twillio" in request.url:
         try:
             print(f"recieved request from twilio: {request.form}")

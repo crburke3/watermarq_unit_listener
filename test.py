@@ -1,10 +1,15 @@
+import main
 from main import check_units
 from watching_service import run_watermarq_messaging
 from reception import primary_reception
 
-# check_units(None)
+
 
 phone = '+17048062009'
+
+
+def test_main():
+    main.run_watermarq_messaging(None)
 
 
 def test_subscribe_response():

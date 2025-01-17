@@ -103,23 +103,17 @@ def save_room_searches(room_searches: List[RoomSearch]):
 
 def load_room_searches() -> List[RoomSearch]:
     # Reference to the "watermarq_system" collection and "room_searches" document
-    doc_ref = db.collection("watermarq_system").document("room_searches")
-
+    collection_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
+    query = collection_ref.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
+    results = query.stream()
+    searches:[RoomSearch] = []
+    for doc in results:
+        doc_data = doc.to_dict()
+        search = RoomSearch.from_dict(doc_data)
+        searches.append(search)
     # Get the document
-    doc = doc_ref.get()
-
-    if doc.exists:
-        # Extract room_searches data
-        room_searches_data = doc.to_dict().get('room_searches', [])
-
-        # Convert each dictionary back to a RoomSearch instance
-        room_searches = [RoomSearch.from_dict(data) for data in room_searches_data]
-
-        print(f"Successfully loaded {len(room_searches)} room searches.")
-        return room_searches
-    else:
-        print("No room searches found in Firestore.")
-        return []
+    print(f"Successfully loaded {len(searches)} room searches.")
+    return searches
 
 
 def save_run_log_to_firebase(successful: bool, error: str=None):
