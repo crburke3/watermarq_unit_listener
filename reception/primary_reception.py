@@ -28,13 +28,13 @@ def handle_subscription(from_number: str):
 def find_message_type(message: str):
     lower_message = message.lower()
     stripped_msg = lower_message.replace(' ', "")
-    if lower_message == 'subscribe':
+    if stripped_msg in ['subscribe', 'start']:
         return MessageType.SUBSCRIBE
-    if lower_message == 'unsubscribe':
+    if stripped_msg in ['unsubscribe', 'end']:
         return MessageType.UNSUBSCRIBE
-    if lower_message == 'restart':
+    if stripped_msg == 'restart':
         return MessageType.RESTART
-    if lower_message == "building":
+    if stripped_msg == "building":
         return MessageType.BUILDING
 
     pattern = r'^\d+(\s*,\s*\d+)*$'
