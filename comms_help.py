@@ -2,6 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 from twilio.rest import Client
+import time
 
 TWILIO_NUMBER = "+17042705208"
 CHRISTIANS_NUMBER = "+17048062009"
@@ -44,9 +45,12 @@ def send_text(number: str, message: str, chunk_size: int = 800):
             start = split_point
 
         # Send each chunk using Twilio
+        should_sleep = len(message_chunks) > 1
         for chunk in message_chunks:
             resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
             print(f"[TEXT:Sent] {number} | {chunk} | {resp.sid} | {resp.status}")
+            if (should_sleep):
+                time.slee(1)
 
     except Exception as e:
         print(f"Failed to send text: {e}")
