@@ -126,7 +126,8 @@ def handle_reception(from_number: str, raw_message: str):
         comms_help.send_message(from_number, response)
         response = handle_initial_search(from_number)
         comms_help.send_message(from_number, response)
-        response = "oh yeah you can send the message 'BUILDING' and ill text you a picture of the room map\n\n"
+        response = "oh yeah you can text 'building' and ill text you a picture of the room map\n"
+        response += "text 'restart' if you want to change your search criteria\n\n"
         response += "also any venmo donations would be appreciated <3 \n\n"
         response += "https://account.venmo.com/u/Christian-Burke-6"
     comms_help.send_message(from_number, response)
