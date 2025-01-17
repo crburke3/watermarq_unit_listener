@@ -3,6 +3,8 @@ import firebase_storing
 from enum import Enum
 import re
 import helpers
+import time
+
 
 class MessageType(Enum):
     SUBSCRIBE='SUBSCRIBE'
@@ -126,6 +128,7 @@ def handle_reception(from_number: str, raw_message: str):
     if message_type == MessageType.ONLY_EXTERIOR:
         response = handle_only_exterior(from_number, message)
         comms_help.send_message(from_number, response)
+        time.sleep(1)
         response = handle_initial_search(from_number)
         comms_help.send_message(from_number, response)
         response = "oh yeah you can text 'building' and ill text you a picture of the room map\n"

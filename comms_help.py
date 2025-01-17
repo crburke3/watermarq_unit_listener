@@ -31,7 +31,7 @@ def send_text(number: str, message: str):
 
         for chunk in message_chunks:
             resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
-            print(f"[TEXT:Sent] {number} | {resp} | {resp.sid} | {resp.status}")
+            print(f"[TEXT:Sent] {number} | {message} | {resp.sid} | {resp.status}")
             # pprint(vars(resp))
 
     except Exception as e:
