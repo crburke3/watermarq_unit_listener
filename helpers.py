@@ -120,7 +120,7 @@ def unit_description(unit: Unit):
     desc += f"  {unit.floor_plan_type}\n"
     desc += f"  Availability: {unit.availability_date}\n"
     desc += f"  Num Rooms: {unit.num_rooms()}\n" if unit.floor_plan_type else ""
-    desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else "Not exterior facing"
+    desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else "  Not exterior facing"
     desc += f"  Corner Unit 🥇\n" if unit.corner_type else ""
     desc += f"  View Ranking: {int(unit.view_rank) * '⭐'}\n" if unit.view_rank else ""
     desc += f"  View Facing: {unit.primary_exterior_face} {view_emoji(unit)}\n" if unit.primary_exterior_face else ""
