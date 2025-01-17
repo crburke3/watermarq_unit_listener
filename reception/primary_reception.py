@@ -103,7 +103,7 @@ def handle_building(from_number: str):
     img_url = "https://storage.googleapis.com/public-random/watermarq_map.png"
     message = "heres the building's map"
     comms_help.send_image(from_number, message, img_url)
-
+    return "sending you the map..."
 
 def handle_reception(from_number: str, raw_message: str):
     message = raw_message.lower()
@@ -116,7 +116,7 @@ def handle_reception(from_number: str, raw_message: str):
     if message_type == MessageType.RESTART:
         response = handle_restart(from_number)
     if message_type == MessageType.BUILDING:
-        handle_building(from_number)
+        response = handle_building(from_number)
     if message_type == MessageType.ROOM_COUNT:
         response = handle_room_count(from_number, message)
     if message_type == MessageType.ONLY_EXTERIOR:
