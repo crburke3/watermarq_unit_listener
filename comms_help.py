@@ -2,8 +2,9 @@ import requests
 from dotenv import load_dotenv
 import os
 from twilio.rest import Client
-from pprint import pprint
 
+TWILIO_NUMBER = "+17042705208"
+CHRISTIANS_NUMBER = "+17048062009"
 
 load_dotenv()
 
@@ -29,7 +30,7 @@ def send_text(number: str, message: str):
         message_chunks = [message[i:i+1500] for i in range(0, len(message), 1500)]
 
         for chunk in message_chunks:
-            resp = client.messages.create(to=number, from_="+17042705208", body=chunk)
+            resp = client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
             print(f"Successfully sent text: {resp.sid} | {resp.status}")
             # pprint(vars(resp))
 

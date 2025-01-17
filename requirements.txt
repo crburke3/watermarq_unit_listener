@@ -1,6 +1,8 @@
-twilio
+twilio~=9.4.2
 requests==2.32.3
-python-dotenv
-beautifulsoup4
+python-dotenv~=1.0.1
+beautifulsoup4~=4.12.3
 firebase-admin
-pytz
+pytz~=2024.2
+
+Flask~=2.1.2
