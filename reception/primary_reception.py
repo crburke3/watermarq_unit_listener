@@ -126,9 +126,9 @@ def handle_reception(from_number: str, raw_message: str):
     if message_type == MessageType.ROOM_COUNT:
         response = handle_room_count(from_number, message)
     if message_type == MessageType.ONLY_EXTERIOR:
-        response = handle_only_exterior(from_number, message)
-        comms_help.send_message(from_number, response)
-        time.sleep(1)
+        # response = handle_only_exterior(from_number, message)
+        # comms_help.send_message(from_number, response)
+        # time.sleep(1)
         response = handle_initial_search(from_number)
         comms_help.send_message(from_number, response)
         response = "oh yeah you can text 'building' and ill text you a picture of the room map\n"
