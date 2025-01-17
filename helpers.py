@@ -63,12 +63,14 @@ def filter_units(search: RoomSearch, units: [Unit]):
             if unit.is_exterior_facing:
                 ret_units.add(unit)
                 continue
-            if 'townhome' in unit.notes.lower():
-                ret_units.add(unit)
-                continue
+            if unit.notes:
+                if 'townhome' in unit.notes.lower():
+                    ret_units.add(unit)
+                    continue
     else:
         ret_units = search_units
-    return ret_units
+    sorted_units = sorted(list(ret_units))
+    return sorted_units
 
 
 def filter_units_for_search(search: RoomSearch, removed_units, added_units, price_changed_units):
