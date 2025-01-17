@@ -15,6 +15,9 @@ MIN_SECS_BETWEEN_RUNS = 1
 def run_watermarq_messaging(args):
     # Load existing units from local storage
     searches: [RoomSearch] = firebase_storing.load_room_searches()
+    if len(searches) == 0:
+        print("skipping room search cause no active searches")
+        return {"message": "no room searches, skipping scraping"}, 200
     last_updated, existing_units = firebase_storing.load_units_from_firebase()
     curr_time = datetime.utcnow()
     if last_updated:
