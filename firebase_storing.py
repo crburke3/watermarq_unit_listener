@@ -107,8 +107,8 @@ def save_room_searches(room_searches: List[RoomSearch]):
 def load_room_searches() -> List[RoomSearch]:
     # Reference to the "watermarq_system" collection and "room_searches" document
     collection_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
-    query = collection_ref.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
-    results = query.stream()
+    # query = collection_ref.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
+    results = collection_ref.stream()
     searches:[RoomSearch] = []
     for doc in results:
         doc_data = doc.to_dict()
