@@ -16,7 +16,7 @@ class MessageType(Enum):
 
 def handle_subscription(from_number: str):
     response = "So you've heard about me 👀\n"
-    response += "I'm here to let you know when rooms open up.\n"
+    response += "I'm here to let you know when rooms open up. Standard text and mms rates apply 💅\n"
     response += 'How many rooms are you looking for? (1...3)\n\n'
     response += 'Ex: 1\n'
     response += "Ex: 1,2,3\n"
@@ -123,6 +123,8 @@ def handle_reception(from_number: str, raw_message: str):
         comms_help.send_message(from_number, response)
         response = handle_initial_search(from_number)
         comms_help.send_message(from_number, response)
-        response = "oh yeah you can send the message 'BUILDING' and ill text you a picture of the room layouts"
+        response = "oh yeah you can send the message 'BUILDING' and ill text you a picture of the room map\n\n"
+        response += "also any venmo donations would be appreciated <3 \n\n"
+        response += "https://account.venmo.com/u/Christian-Burke-6"
     comms_help.send_message(from_number, response)
     return response
