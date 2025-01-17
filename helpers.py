@@ -53,14 +53,22 @@ def add_csv_data(unit):
             unit.size_rank = csv_unit.size_rank
             unit.view_rank = csv_unit.view_rank
             unit.notes = csv_unit.notes
-            unit.floor_plan_type = csv_unit.floor_plan_type
 
 
 def filter_units(search: RoomSearch, units: [Unit]):
     search_units = set(filter(lambda unit: unit.num_rooms() in search.num_rooms, units))
+    ret_units = set()
     if search.only_exterior:
-        search_units = set(filter(lambda unit: unit.is_exterior_facing, search_units))
-    return search_units
+        for unit in search_units:
+            if unit.is_exterior_facing:
+                ret_units.add(unit)
+                continue
+            if 'townhome' in unit.notes.lower():
+                ret_units.add(unit)
+                continue
+    else:
+        ret_units = search_units
+    return ret_units
 
 
 def filter_units_for_search(search: RoomSearch, removed_units, added_units, price_changed_units):

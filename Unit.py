@@ -16,6 +16,7 @@ class Unit:
 
     def num_rooms(self):
         if not self.floor_plan_type:
+            print(f"could not find floor plan for: {self.unit_number}")
             return None
         plan_type = self.floor_plan_type.lower()
         if "studio" in plan_type:
@@ -26,6 +27,7 @@ class Unit:
             return 2
         if "three bedroom" in plan_type:
             return 3
+        print(f"unknown floor plan for: {self.unit_number} | ${plan_type}")
         return None
 
     def __repr__(self):

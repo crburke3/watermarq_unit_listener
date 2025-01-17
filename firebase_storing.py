@@ -147,13 +147,13 @@ def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior
     else:
         search = RoomSearch(phones=[phone_number])
 
-    if room_counts:
+    if room_counts  is not None:
         search.num_rooms = room_counts
-    if only_exterior:
+    if only_exterior is not None:
         search.only_exterior = only_exterior
-    if max_price:
+    if max_price  is not None:
         print("need to set max price up")
-    if name:
+    if name  is not None:
         search.name = name
 
     search_export = search.to_dict()
@@ -177,37 +177,37 @@ def delete_search(phone_number: str):
     args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
     doc_ref = args_ref.document(phone_number)
     doc_ref.delete()
-
-
-save_room_searches([
-            RoomSearch(
-                name="christian and jake",
-                phones=['+17048062009',
-                        '+19802152772'],
-                num_rooms=[2, 3],
-                only_exterior=True
-            ),
-            RoomSearch(
-                name="Andrea & Drew",
-                phones=["+19806364444",
-                        "+19198277295"],
-                num_rooms=[1],
-                only_exterior=False
-            ),
-            RoomSearch(
-                name="Acacia",
-                phones=[
-                    '+14256916189'
-                ],
-                num_rooms=[1],
-                only_exterior=False
-            ),
-            RoomSearch(
-                name="Marcus",
-                phones=[
-                    '+12537364084'
-                ],
-                num_rooms=[1],
-                only_exterior=False
-            )
-        ])
+#
+#
+# save_room_searches([
+#             RoomSearch(
+#                 name="christian and jake",
+#                 phones=['+17048062009',
+#                         '+19802152772'],
+#                 num_rooms=[2, 3],
+#                 only_exterior=True
+#             ),
+#             RoomSearch(
+#                 name="Andrea & Drew",
+#                 phones=["+19806364444",
+#                         "+19198277295"],
+#                 num_rooms=[1],
+#                 only_exterior=False
+#             ),
+#             RoomSearch(
+#                 name="Acacia",
+#                 phones=[
+#                     '+14256916189'
+#                 ],
+#                 num_rooms=[1],
+#                 only_exterior=False
+#             ),
+#             RoomSearch(
+#                 name="Marcus",
+#                 phones=[
+#                     '+12537364084'
+#                 ],
+#                 num_rooms=[1],
+#                 only_exterior=False
+#             )
+#         ])

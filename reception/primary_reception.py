@@ -105,6 +105,7 @@ def handle_building(from_number: str):
     comms_help.send_image(from_number, message, img_url)
     return "sending you the map..."
 
+
 def handle_reception(from_number: str, raw_message: str):
     message = raw_message.lower()
     message_type = find_message_type(message)

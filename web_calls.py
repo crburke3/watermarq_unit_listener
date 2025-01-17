@@ -130,6 +130,8 @@ def getAvailableFloorplans() -> [FloorPlan]:
                     floor_plan_id = on_click_params[0]
             else:
                 print("No onClick function found for this button.")
+        if not floor_plan_type:
+            print(f"Failed to find floor plan type: {floor_plan_name}")
         new_unit = FloorPlan(name=floor_plan_name, id_=floor_plan_id, type_=floor_plan_type)
         if not new_unit.id:
             continue
