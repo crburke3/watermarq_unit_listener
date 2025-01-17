@@ -2,7 +2,7 @@ from typing import List, Dict
 
 
 class RoomSearch:
-    def __init__(self, name: str, phones: List[str], num_rooms: List[int], only_exterior: bool):
+    def __init__(self,  phones: List[str], name: str=None, num_rooms: List[int] = None, only_exterior: bool = None):
         self.name = name
         self.phones = phones
         self.num_rooms = num_rooms

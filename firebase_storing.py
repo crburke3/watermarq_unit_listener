@@ -140,35 +140,74 @@ def get_most_recent_run_log():
     return None
 
 
-save_room_searches([
-            RoomSearch(
-                name="christian and jake",
-                phones=['+17048062009',
-                        '+19802152772'],
-                num_rooms=[2, 3],
-                only_exterior=True
-            ),
-            RoomSearch(
-                name="Andrea & Drew",
-                phones=["+19806364444",
-                        "+19198277295"],
-                num_rooms=[1],
-                only_exterior=False
-            ),
-            RoomSearch(
-                name="Acacia",
-                phones=[
-                    '+14256916189'
-                ],
-                num_rooms=[1],
-                only_exterior=False
-            ),
-            RoomSearch(
-                name="Marcus",
-                phones=[
-                    '+12537364084'
-                ],
-                num_rooms=[1],
-                only_exterior=False
-            )
-        ])
+def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior: bool=None, max_price:int=None):
+    args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
+    doc_ref = args_ref.document(phone_number)
+    search_doc = doc_ref.get()
+    if search_doc.exists:
+        search_data = search_doc.to_dict()
+        search = RoomSearch.from_dict(search_data)
+    else:
+        search = RoomSearch(phones=[phone_number])
+
+    if room_counts:
+        search.num_rooms = room_counts
+    if only_exterior:
+        search.only_exterior = only_exterior
+    if max_price:
+        print("need to set max price up")
+
+    search_export = search.to_dict()
+    doc_ref.set(search_export)
+    return search
+
+
+def get_search(phone_number: str):
+    args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
+    doc_ref = args_ref.document(phone_number)
+    search_doc = doc_ref.get()
+    if search_doc.exists:
+        search_data = search_doc.to_dict()
+        search = RoomSearch.from_dict(search_data)
+        return search
+    else:
+        return None
+
+
+def delete_search(phone_number: str):
+    args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
+    doc_ref = args_ref.document(phone_number)
+    doc_ref.delete()
+
+# save_room_searches([
+#             RoomSearch(
+#                 name="christian and jake",
+#                 phones=['+17048062009',
+#                         '+19802152772'],
+#                 num_rooms=[2, 3],
+#                 only_exterior=True
+#             ),
+#             RoomSearch(
+#                 name="Andrea & Drew",
+#                 phones=["+19806364444",
+#                         "+19198277295"],
+#                 num_rooms=[1],
+#                 only_exterior=False
+#             ),
+#             RoomSearch(
+#                 name="Acacia",
+#                 phones=[
+#                     '+14256916189'
+#                 ],
+#                 num_rooms=[1],
+#                 only_exterior=False
+#             ),
+#             RoomSearch(
+#                 name="Marcus",
+#                 phones=[
+#                     '+12537364084'
+#                 ],
+#                 num_rooms=[1],
+#                 only_exterior=False
+#             )
+#         ])

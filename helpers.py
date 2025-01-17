@@ -56,20 +56,32 @@ def add_csv_data(unit):
             unit.floor_plan_type = csv_unit.floor_plan_type
 
 
+def filter_units(search: RoomSearch, units: [Unit]):
+    search_units = set(filter(lambda unit: unit.num_rooms() in search.num_rooms, units))
+    if search.only_exterior:
+        search_units = set(filter(lambda unit: unit.is_exterior_facing, search_units))
+    return search_units
+
+
 def filter_units_for_search(search: RoomSearch, removed_units, added_units, price_changed_units):
     search_removed_units = set()
     search_added_units = set()
     search_price_changed_units = set()
     for idx, section in enumerate([removed_units, added_units, price_changed_units]):
         ### Actual filtering
-        search_units = set(filter(lambda unit: unit.num_rooms() in search.num_rooms, section))
-        if search.only_exterior:
-            search_units = set(filter(lambda unit: unit.is_exterior_facing, search_units))
-
+        search_units = filter_units(search, section)
         if idx == 0: search_removed_units = search_units
         if idx == 1: search_added_units = search_units
         if idx == 2: search_price_changed_units = search_units
     return search_removed_units, search_added_units, search_price_changed_units
+
+
+def generate_initial_search_message(search: RoomSearch, units: [Unit]):
+    sorted_units = sorted(list(units))
+    message = "Here's the units that are currently available in your search\n"
+    message += "I'll text you whenever one with your criteria is added, removed or updated😘\n\n"
+    message += "\n".join(f"• {unit_description(obj)}" for obj in sorted_units)
+    return message
 
 
 def generate_message(search: RoomSearch, removed_units, added_units, price_changed_units):
@@ -100,7 +112,7 @@ def unit_description(unit: Unit):
     desc += f"  {unit.floor_plan_type}\n"
     desc += f"  Availability: {unit.availability_date}\n"
     desc += f"  Num Rooms: {unit.num_rooms()}\n" if unit.floor_plan_type else ""
-    desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else ""
+    desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else "Not exterior facing"
     desc += f"  Corner Unit 🥇\n" if unit.corner_type else ""
     desc += f"  View Ranking: {int(unit.view_rank) * '⭐'}\n" if unit.view_rank else ""
     desc += f"  View Facing: {unit.primary_exterior_face} {view_emoji(unit)}\n" if unit.primary_exterior_face else ""

@@ -1,12 +1,13 @@
 import comms_help
 import firebase_storing
+import reception.primary_reception
 from watching_service import run_watermarq_messaging
 from flask import request, jsonify
 from dotenv import load_dotenv
-from twilio.rest import Client
-import os
+
 
 load_dotenv()
+
 
 def check_units(request):
     """
@@ -24,8 +25,8 @@ def check_units(request):
     if "from_twillio" in request.url:
         try:
             print(f"recieved request from twilio: {request.form}")
-            resp_message = handle_message_reception(request)
-            return resp_message
+            handle_message_reception(request)
+            return "handled reception", 200
         except Exception as e:
             print(f"Failed to handle from_twillio response: {e}")
             return "We had an error processing that :( Christian has been notified"
@@ -55,19 +56,7 @@ def handle_message_reception(request):
     if not from_number or not message_body:
         return jsonify({"error": "Missing required fields: 'From' or 'Body'"}), 400
 
-    # Initialize Twilio client
-    account_sid = os.getenv('twilio_sid')
-    auth_token = os.getenv('twilio_auth_token')
-    client = Client(account_sid, auth_token)
-
     try:
-        # Send the forwarded message
-        client.messages.create(
-            from_=comms_help.TWILIO_NUMBER,
-            to=comms_help.CHRISTIANS_NUMBER,
-            body=f"New SMS from {from_number}: {message_body}"
-        )
-        return jsonify({"status": "Message forwarded successfully"}), 200
-
+        reception.primary_reception.handle_reception(from_number=from_number, raw_message=message_body)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
