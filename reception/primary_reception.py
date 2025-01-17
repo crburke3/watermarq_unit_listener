@@ -77,6 +77,7 @@ def handle_initial_search(from_number: str):
         raise Exception(f'could not find search for number: {from_number}')
     last_updated, all_units = firebase_storing.load_units_from_firebase()
     good_units = helpers.filter_units(search, units=all_units)
+    print(f"found {len(good_units)} for search: {from_number}")
     if len(good_units) == 0:
         initial_message = 'Well it looks like theres no units currently available with that criteria :/ \n'
         initial_message += 'But dont worry, i search every hour and will let you know when something is available\n\n'
@@ -84,7 +85,7 @@ def handle_initial_search(from_number: str):
         return initial_message
     else:
         initial_message = helpers.generate_initial_search_message(search, good_units)
-    return initial_message
+        return initial_message
 
 
 def handle_unsubscribe(from_number: str):
