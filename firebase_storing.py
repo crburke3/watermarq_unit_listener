@@ -139,21 +139,36 @@ def get_most_recent_run_log():
         return RunLog.from_dict(log_data)
     return None
 
-# save_room_searches([
-#             RoomSearch(
-#                 name="christian and jake",
-#                 phones=[
-#                     '+17048062009',
-#                         '+19802152772'
-#                         ],
-#                 num_rooms=[2, 3],
-#                 only_exterior=True
-#             ),
-#             RoomSearch(
-#                 name="Andrea & Drew",
-#                 phones=["+19806364444",
-#                         "+19198277295"],
-#                 num_rooms=[1],
-#                 only_exterior=False
-#             )
-#         ])
+
+save_room_searches([
+            RoomSearch(
+                name="christian and jake",
+                phones=['+17048062009',
+                        '+19802152772'],
+                num_rooms=[2, 3],
+                only_exterior=True
+            ),
+            RoomSearch(
+                name="Andrea & Drew",
+                phones=["+19806364444",
+                        "+19198277295"],
+                num_rooms=[1],
+                only_exterior=False
+            ),
+            RoomSearch(
+                name="Acacia",
+                phones=[
+                    '+14256916189'
+                ],
+                num_rooms=[1],
+                only_exterior=False
+            ),
+            RoomSearch(
+                name="Marcus",
+                phones=[
+                    '+12537364084'
+                ],
+                num_rooms=[1],
+                only_exterior=False
+            )
+        ])
