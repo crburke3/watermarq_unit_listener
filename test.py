@@ -23,7 +23,7 @@ def test_secret_message_correct():
 
 
 def test_secret_message_wrong():
-    message = "fuckyou"
+    message = "shit"
     resp = primary_reception.handle_reception(phone, message)
     print(resp)
 

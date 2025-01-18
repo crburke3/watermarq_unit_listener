@@ -52,7 +52,7 @@ def handle_subscription(from_number: str):
     response += "If you know the secret code, send it in your next text\n\n"
     response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
     response += "You can always text 'unsubscribe' to opt out - no worries G"
-    firebase_storing.save_search_args(from_number)
+    firebase_storing.save_search_args(from_number, is_active=False)
     return response
 
 
@@ -143,19 +143,26 @@ def handle_reception(from_number: str, raw_message: str):
         response = handle_unsubscribe(from_number)
     if message_type == MessageType.RESTART:
         response = handle_restart(from_number)
-    if message_type == MessageType.BUILDING:
-        response = handle_building(from_number)
-    if message_type == MessageType.ROOM_COUNT:
-        response = handle_room_count(from_number, message)
-    if message_type == MessageType.ONLY_EXTERIOR:
-        response = handle_only_exterior(from_number, message)
-        # comms_help.send_message(from_number, response)
-        # time.sleep(1)
-        response = handle_initial_search(from_number)
-        comms_help.send_message(from_number, response)
-        response = "oh yeah you can text 'building' and ill text you a picture of the room map\n"
-        response += "text 'restart' if you want to change your search criteria\n\n"
-        response += "also any venmo donations would be appreciated <3 \n\n"
-        response += "https://account.venmo.com/u/Christian-Burke-6"
-    comms_help.send_message(from_number, response)
+    search = firebase_storing.get_search(from_number)
+    if search:
+        if search.is_active:
+            if message_type == MessageType.BUILDING:
+                response = handle_building(from_number)
+            if message_type == MessageType.ROOM_COUNT:
+                response = handle_room_count(from_number, message)
+            if message_type == MessageType.ONLY_EXTERIOR:
+                response = handle_only_exterior(from_number, message)
+                # comms_help.send_message(from_number, response)
+                # time.sleep(1)
+                response = handle_initial_search(from_number)
+                comms_help.send_message(from_number, response)
+                response = "oh yeah you can text 'building' and ill text you a picture of the room map\n"
+                response += "text 'restart' if you want to change your search criteria\n\n"
+                response += "also any venmo donations would be appreciated <3 \n\n"
+                response += "https://account.venmo.com/u/Christian-Burke-6"
+            comms_help.send_message(from_number, response)
+        else:
+            response = "I know that one, but you're still on the waitlist :("
+    else:
+        response = "Not sure how you're seeing this. plz try sending 'subscribe'"
     return response
