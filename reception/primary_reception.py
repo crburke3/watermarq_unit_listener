@@ -171,6 +171,8 @@ def handle_reception(from_number: str, raw_message: str):
             comms_help.send_message(from_number, response)
         else:
             response = "I know that one, but you're still on the waitlist :("
+            comms_help.send_message(from_number, response)
     else:
         response = "Not sure how you're seeing this. plz try sending 'subscribe'"
+        comms_help.send_message(from_number, response)
     return response
