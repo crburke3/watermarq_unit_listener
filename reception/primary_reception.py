@@ -46,12 +46,12 @@ def find_message_type(message: str):
 
 def handle_subscription(from_number: str):
     response = "So you've heard about me 👀\n"
-    response += "I'm here to let you know when rooms open up, are removed or have their price updated"
+    response += "I'm here to let you know when rooms open up, are removed or have their price updated\n\n"
     response += "Standard text and mms rates apply 💅\n\n"
     response += "Thank's for your intrest 🙇 you've been added to the waitlist\n\n"
     response += "If you know the secret code, send it in your next text\n\n"
-    response += "Otherwise, please wait for a text coming in the next few days\n\n"
-    response += "You can always text 'unsubscribe' to opt out - no worries mane"
+    response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
+    response += "You can always text 'unsubscribe' to opt out - no worries G"
     firebase_storing.save_search_args(from_number)
     return response
 
