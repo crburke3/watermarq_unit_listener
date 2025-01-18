@@ -1,9 +1,6 @@
 import comms_help
 import main
-from main import check_units
-from watching_service import run_watermarq_messaging
 from reception import primary_reception
-
 
 
 phone = '+17048062009'

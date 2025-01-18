@@ -134,7 +134,7 @@ def handle_reception(from_number: str, raw_message: str):
     comms_help.send_telegram_message("", f"RECIEVED|{from_number}: {raw_message}")
     message = raw_message.lower()
     message_type = find_message_type(message)
-    response = 'try again plz...'
+    response = "I don't know that one :( Plz try again"
     if message_type == MessageType.SUBSCRIBE:
         response = handle_subscription(from_number)
     if message_type == MessageType.SECRET_MESSAGE:
