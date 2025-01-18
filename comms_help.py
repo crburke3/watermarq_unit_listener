@@ -50,7 +50,7 @@ def send_text(number: str, message: str, chunk_size: int = 800):
             resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
             print(f"[TEXT:Sent] {number} | {chunk} | {resp.sid} | {resp.status}")
             if (should_sleep):
-                time.slee(1)
+                time.sleep(1)
 
     except Exception as e:
         print(f"Failed to send text: {e}")

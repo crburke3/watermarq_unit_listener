@@ -16,14 +16,14 @@ def test_subscribe_response():
     print(resp)
 
 
-def test_secret_message_correct():
-    message = "thxchristian"
+def test_secret_message_wrong():
+    message = "shit"
     resp = primary_reception.handle_reception(phone, message)
     print(resp)
 
 
-def test_secret_message_wrong():
-    message = "shit"
+def test_secret_message_correct():
+    message = "thxchristian"
     resp = primary_reception.handle_reception(phone, message)
     print(resp)
 

@@ -137,12 +137,16 @@ def handle_reception(from_number: str, raw_message: str):
     response = "I don't know that one :( Plz try again"
     if message_type == MessageType.SUBSCRIBE:
         response = handle_subscription(from_number)
+        return response
     if message_type == MessageType.SECRET_MESSAGE:
         response = handle_secret_code(from_number, message)
+        return response
     if message_type == MessageType.UNSUBSCRIBE:
         response = handle_unsubscribe(from_number)
+        return response
     if message_type == MessageType.RESTART:
         response = handle_restart(from_number)
+        return response
     search = firebase_storing.get_search(from_number)
     if search:
         if search.is_active:
