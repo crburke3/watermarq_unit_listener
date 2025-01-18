@@ -19,6 +19,18 @@ def test_subscribe_response():
     print(resp)
 
 
+def test_secret_message_correct():
+    message = "thxchristian"
+    resp = primary_reception.handle_reception(phone, message)
+    print(resp)
+
+
+def test_secret_message_wrong():
+    message = "fuckyou"
+    resp = primary_reception.handle_reception(phone, message)
+    print(resp)
+
+
 def test_room_number_response_single():
     message = '1'
     message_type = primary_reception.find_message_type(message)

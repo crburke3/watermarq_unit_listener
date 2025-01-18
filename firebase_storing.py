@@ -104,7 +104,7 @@ def save_room_searches(room_searches: List[RoomSearch]):
 
 
 
-def load_room_searches() -> List[RoomSearch]:
+def load_room_searches(active=True) -> List[RoomSearch]:
     # Reference to the "watermarq_system" collection and "room_searches" document
     collection_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
     # query = collection_ref.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
@@ -113,7 +113,11 @@ def load_room_searches() -> List[RoomSearch]:
     for doc in results:
         doc_data = doc.to_dict()
         search = RoomSearch.from_dict(doc_data)
-        searches.append(search)
+        if active:
+            if search.is_active:
+                searches.append(search)
+        else:
+            searches.append(search)
     # Get the document
     print(f"Successfully loaded {len(searches)} room searches.")
     return searches
@@ -137,7 +141,7 @@ def get_most_recent_run_log():
     return None
 
 
-def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior: bool=None, max_price:int=None, name:str = None):
+def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior: bool=None, max_price:int=None, name:str = None, is_active=None):
     args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
     doc_ref = args_ref.document(phone_number)
     search_doc = doc_ref.get()
@@ -155,6 +159,8 @@ def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior
         print("need to set max price up")
     if name  is not None:
         search.name = name
+    if is_active is not None:
+        search.is_active = is_active
 
     search_export = search.to_dict()
     doc_ref.set(search_export)

@@ -5,6 +5,8 @@ import re
 import helpers
 import time
 
+SECRET_MESSAGE = 'thxchristian'
+
 
 class MessageType(Enum):
     SUBSCRIBE='SUBSCRIBE'
@@ -14,17 +16,7 @@ class MessageType(Enum):
     UNSUBSCRIBE="UNSUBSCRIBE"
     RESTART="RESTART"
     BUILDING="BUILDING"
-
-
-def handle_subscription(from_number: str):
-    response = "So you've heard about me 👀\n"
-    response += "I'm here to let you know when rooms open up. Standard text and mms rates apply 💅\n\n"
-    response += "Dont forget to tell them Christian Burke sent you if you end up signing \n\n"
-    response += 'How many rooms are you looking for? (1...3)\n\n'
-    response += 'Ex: 1\n'
-    response += "Ex: 1,2,3\n"
-    firebase_storing.save_search_args(from_number)
-    return response
+    SECRET_MESSAGE="SECRET_MESSAGE"
 
 
 def find_message_type(message: str):
@@ -38,6 +30,8 @@ def find_message_type(message: str):
         return MessageType.RESTART
     if stripped_msg == "building":
         return MessageType.BUILDING
+    if stripped_msg in ["thxchristian", "fuckyou"]:
+        return MessageType.SECRET_MESSAGE
 
     pattern = r'^\d+(\s*,\s*\d+)*$'
     is_room_count = bool(re.match(pattern, stripped_msg))
@@ -48,6 +42,32 @@ def find_message_type(message: str):
         return MessageType.ONLY_EXTERIOR
 
     return MessageType.UNKNOWN
+
+
+def handle_subscription(from_number: str):
+    response = "So you've heard about me 👀\n"
+    response += "I'm here to let you know when rooms open up, are removed or have their price updated"
+    response += "Standard text and mms rates apply 💅\n\n"
+    response += "Thank's for your intrest 🙇 you've been added to the waitlist\n\n"
+    response += "If you know the secret code, send it in your next text\n\n"
+    response += "Otherwise, please wait for a text coming in the next few days\n\n"
+    response += "You can always text 'unsubscribe' to opt out - no worries mane"
+    firebase_storing.save_search_args(from_number)
+    return response
+
+
+def handle_secret_code(from_number: str, message: str):
+    stripped_msg = message.replace(' ', "")
+    if SECRET_MESSAGE in stripped_msg:
+        response = "Congratulations you're in 😎\n\n"
+        response += "Dont forget to tell them Christian Burke sent you if you end up signing \n\n"
+        response += 'How many rooms are you looking for? (1...3)\n\n'
+        response += 'Ex: 1\n'
+        response += "Ex: 1,2,3"
+        firebase_storing.save_search_args(from_number, is_active=True)
+    else:
+        response = "Incorrect secret code :( I bet you're cool though :*"
+    return response
 
 
 def handle_room_count(from_number: str, message: str):
@@ -117,6 +137,8 @@ def handle_reception(from_number: str, raw_message: str):
     response = 'try again plz...'
     if message_type == MessageType.SUBSCRIBE:
         response = handle_subscription(from_number)
+    if message_type == MessageType.SECRET_MESSAGE:
+        response = handle_secret_code(from_number, message)
     if message_type == MessageType.UNSUBSCRIBE:
         response = handle_unsubscribe(from_number)
     if message_type == MessageType.RESTART:
