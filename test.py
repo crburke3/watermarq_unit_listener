@@ -3,7 +3,7 @@ import main
 from reception import primary_reception
 
 
-phone = '+17048062009'
+phone = '+17042222222'
 
 
 def test_main():
@@ -11,7 +11,7 @@ def test_main():
 
 
 def test_subscribe_response():
-    message = "SUBSCRIBE"
+    message = "Subscribe"
     resp = primary_reception.handle_reception(phone, message)
     print(resp)
 
