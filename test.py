@@ -71,3 +71,9 @@ def test_building():
     message_type = primary_reception.find_message_type(message)
     assert message_type == primary_reception.MessageType. BUILDING
     resp = primary_reception.handle_reception(phone, message)
+
+
+def test_send_manual_message():
+    message = "Subscribe"
+    number = "+16106756886"
+    resp = primary_reception.handle_reception(number, message)

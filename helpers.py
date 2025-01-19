@@ -79,7 +79,7 @@ def filter_units_for_search(search: RoomSearch, removed_units, added_units, pric
     search_price_changed_units = set()
     for idx, section in enumerate([removed_units, added_units, price_changed_units]):
         ### Actual filtering
-        search_units = filter_units(search, section)
+        search_units = set(filter_units(search, section))
         if idx == 0: search_removed_units = search_units
         if idx == 1: search_added_units = search_units
         if idx == 2: search_price_changed_units = search_units
