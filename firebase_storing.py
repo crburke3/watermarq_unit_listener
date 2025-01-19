@@ -183,6 +183,26 @@ def delete_search(phone_number: str):
     args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
     doc_ref = args_ref.document(phone_number)
     doc_ref.delete()
+
+
+def save_before_and_after(before: list[Unit], after_removed: set[Unit], after_added: set[Unit], after_changed: set[Unit]):
+    try:
+        args_ref = db.collection("watermarq_system").document("search_changes_main").collection('search_changes')
+        doc_name = datetime.now().isoformat()
+        doc_ref = args_ref.document(doc_name)
+        before_sorted = sorted(before)
+        doc_data = {
+            "timestamp": datetime.now().isoformat(),
+            "before_all": before_sorted,
+            "after_removed": sorted(list(after_removed)),
+            "after_added": sorted(list(after_added)),
+            "after_changed": sorted(list(after_changed))
+        }
+        doc_ref.set(doc_data)
+        print(f"saved before and after: {doc_name}")
+    except Exception as e:
+        print(f"Failed to save before and after: {e}")
+
 #
 #
 # save_room_searches([

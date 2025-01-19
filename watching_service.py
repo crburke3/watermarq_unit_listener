@@ -54,6 +54,7 @@ def run_watermarq_messaging(args):
         if len(search_removed_units) == 0 and len(search_added_units) == 0 and len(search_price_changed_units) == 0:
             print(f"no changes for search {search.name}")
             continue
+        firebase_storing.save_before_and_after(existing_units, removed_units, added_units, price_changed_units)
         message = helpers.generate_message(search, search_removed_units, search_added_units, search_price_changed_units)
         print(f"sending message to {search.name}")
         comms_help.send_telegram_message("", message)
