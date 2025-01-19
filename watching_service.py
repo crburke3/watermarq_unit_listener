@@ -41,7 +41,7 @@ def run_watermarq_messaging(args):
         new_units.update(currently_available_units)
 
     # Compare the existing units with the new units
-    removed_units, added_units, price_changed_units = helpers.compare_units(existing_units, new_units)
+    removed_units, added_units, price_changed_units = helpers.compare_units(set(existing_units), new_units)
 
     # Print the results
     print(f"Units removed from the web: {removed_units}")
