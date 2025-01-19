@@ -47,14 +47,14 @@ def run_watermarq_messaging(args):
     print(f"Units removed from the web: {removed_units}")
     print(f"Units added to the web: {added_units}")
     print(f"Units with price differences: {price_changed_units}")
-
+    if len(removed_units) > 0 or len(added_units) > 0 or len(price_changed_units) > 0:
+        firebase_storing.save_before_and_after(existing_units, removed_units, added_units, price_changed_units)
 
     for search in searches:
         search_removed_units, search_added_units, search_price_changed_units = helpers.filter_units_for_search(search, removed_units, added_units, price_changed_units)
         if len(search_removed_units) == 0 and len(search_added_units) == 0 and len(search_price_changed_units) == 0:
             print(f"no changes for search {search.name}")
             continue
-        firebase_storing.save_before_and_after(existing_units, removed_units, added_units, price_changed_units)
         message = helpers.generate_message(search, search_removed_units, search_added_units, search_price_changed_units)
         print(f"sending message to {search.name}")
         comms_help.send_telegram_message("", message)

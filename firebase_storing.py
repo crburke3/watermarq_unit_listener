@@ -193,10 +193,10 @@ def save_before_and_after(before: list[Unit], after_removed: set[Unit], after_ad
         before_sorted = sorted(before)
         doc_data = {
             "timestamp": datetime.now().isoformat(),
-            "before_all": before_sorted,
-            "after_removed": sorted(list(after_removed)),
-            "after_added": sorted(list(after_added)),
-            "after_changed": sorted(list(after_changed))
+            "before_all": [x.to_dict() for x in before_sorted],
+            "after_removed": [x.to_dict() for x in sorted(list(after_removed))],
+            "after_added": [x.to_dict() for x in sorted(list(after_added))],
+            "after_changed": [x.to_dict() for x in sorted(list(after_changed))]
         }
         doc_ref.set(doc_data)
         print(f"saved before and after: {doc_name}")
