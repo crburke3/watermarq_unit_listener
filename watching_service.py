@@ -41,7 +41,7 @@ def run_watermarq_messaging(args):
         new_units.update(currently_available_units)
 
     # Compare the existing units with the new units
-    removed_units, added_units, price_changed_units = helpers.compare_units(set(existing_units), new_units)
+    removed_units, added_units, price_changed_units, price_changed_units_data = helpers.compare_units(set(existing_units), new_units)
 
     # Print the results
     print(f"Units removed from the web: {removed_units}")
@@ -55,7 +55,7 @@ def run_watermarq_messaging(args):
         if len(search_removed_units) == 0 and len(search_added_units) == 0 and len(search_price_changed_units) == 0:
             print(f"no changes for search {search.name}")
             continue
-        message = helpers.generate_message(search, search_removed_units, search_added_units, search_price_changed_units)
+        message = helpers.generate_message(search, search_removed_units, search_added_units, search_price_changed_units, price_changed_units_data)
         print(f"sending message to {search.name}")
         comms_help.send_telegram_message("", message)
         for phone in search.phones:

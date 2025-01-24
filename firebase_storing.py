@@ -186,6 +186,7 @@ def delete_search(phone_number: str):
 
 
 def save_before_and_after(before: list[Unit], after_removed: set[Unit], after_added: set[Unit], after_changed: set[Unit]):
+    print("saving before and after")
     try:
         args_ref = db.collection("watermarq_system").document("search_changes_main").collection('search_changes')
         doc_name = datetime.now().isoformat()

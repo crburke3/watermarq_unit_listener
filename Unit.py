@@ -82,7 +82,7 @@ class Unit:
 
     def __hash__(self):
         """Hash based on unit_number and price."""
-        return hash((self.unit_number, self.price))
+        return hash(self.unit_number)
 
     def __lt__(self, other):
         if isinstance(other, Unit):

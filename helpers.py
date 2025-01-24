@@ -16,12 +16,25 @@ def compare_units(existing_units: Set[Unit], new_units: Set[Unit]):
     added_units = {unit for unit in new_units if unit not in existing_units}
 
     # Units whose prices differ locally and on the web
-    price_changed_units = {
+    price_changed_units_set = {
         unit for unit in existing_units
         if unit in new_units and unit.price != next(u.price for u in new_units if u == unit)
     }
+    old_units_dict = {unit.unit_number: unit for unit in existing_units}
+    new_units_dict = {unit.unit_number: unit for unit in new_units}
+    price_changed_units = []
+    for unit_number, new_unit in new_units_dict.items():
+        old_unit = old_units_dict.get(unit_number)
+        if old_unit and old_unit.price != new_unit.price:
+            change = "increased" if new_unit.price > old_unit.price else "decreased"
+            price_changed_units.append((
+                new_unit,
+                old_unit.price,
+                new_unit.price,
+                change
+            ))
 
-    return removed_units, added_units, price_changed_units
+    return removed_units, added_units, price_changed_units_set, price_changed_units
 
 
 
@@ -94,7 +107,7 @@ def generate_initial_search_message(search: RoomSearch, units: [Unit]):
     return message
 
 
-def generate_message(search: RoomSearch, removed_units, added_units, price_changed_units):
+def generate_message(search: RoomSearch, removed_units, added_units, price_changed_units, price_changed_units_data):
     removed_list = sorted(list(removed_units))
     added_list = sorted(list(added_units))
     price_changed = sorted(list(price_changed_units))
@@ -111,7 +124,22 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
 
     if len(price_changed_units) > 0:
         message += "the following units have had their prices changed 🤔\n"
-        message += "\n:".join(f"• {unit_description(obj)}" for obj in price_changed)
+        for price_unit in price_changed:
+            message += f"• {unit_description(price_unit)}"
+            price_change_item = None
+            for item in price_changed_units_data:
+                if item[0] == price_unit:
+                    price_change_item = item
+                    break
+            if price_change_item:
+                message += f"  old price: {price_change_item[1]}\n"
+                message += f"  new price: {price_change_item[2]}"
+                dec_or_inc = price_change_item[3]
+                if dec_or_inc == 'increased':
+                    message += "🔺\n"
+                else:
+                    message += "💚\n"
+            message += "\n"
         message += "\n"
 
     return message
