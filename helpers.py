@@ -132,7 +132,7 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
                     price_change_item = item
                     break
             if price_change_item:
-                message += f"  old price: {price_change_item[1]}\n"
+                # message += f"  old price: {price_change_item[1]}\n"
                 message += f"  new price: {price_change_item[2]}"
                 dec_or_inc = price_change_item[3]
                 if dec_or_inc == 'increased':
