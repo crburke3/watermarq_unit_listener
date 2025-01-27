@@ -2,10 +2,11 @@ from typing import Dict
 from datetime import datetime
 
 class RunLog:
-    def __init__(self, timestamp: datetime, success: bool, error_message: str = None):
+    def __init__(self, timestamp: datetime, success: bool, error_message: str = None, proxy: str = None):
         self.timestamp = timestamp
         self.success = success
         self.error_message = error_message
+        self.proxy = proxy
 
     def __repr__(self):
         return (f"RunLog(timestamp={self.timestamp.isoformat()}, success={self.success}, "
@@ -20,7 +21,8 @@ class RunLog:
         return cls(
             timestamp=datetime.fromisoformat(data['timestamp']),
             success=data['success'],
-            error_message=data.get('error_message')  # Use .get to handle optional field
+            error_message=data.get('error_message'),  # Use .get to handle optional field
+            proxy=data.get('proxy', None)
         )
 
     def to_dict(self) -> Dict:
@@ -31,5 +33,6 @@ class RunLog:
         return {
             'timestamp': self.timestamp.isoformat(),
             'success': self.success,
-            'error_message': self.error_message
+            'error_message': self.error_message,
+            'proxy': self.proxy
         }

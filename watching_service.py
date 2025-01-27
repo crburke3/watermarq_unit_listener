@@ -12,7 +12,7 @@ from datetime import datetime
 MIN_SECS_BETWEEN_RUNS = 1
 
 
-def run_watermarq_messaging(args):
+def run_watermarq_messaging(args, proxy_url: str = None):
     # Load existing units from local storage
     searches: [RoomSearch] = firebase_storing.load_room_searches()
     if len(searches) == 0:
@@ -30,13 +30,13 @@ def run_watermarq_messaging(args):
 
     # Load the current available units from the web
     new_units: Set[Unit] = set()
-    floor_plans = wc.getAvailableFloorplans()
+    floor_plans = wc.getAvailableFloorplans(proxy_url=proxy_url)
     if len(floor_plans) == 0:
         raise Exception('Could not find any floorplans from availableFloorPlans function')
     for floor_plan in floor_plans:
         print(f"Getting available units for floorPlan: {floor_plan.name}...", end="", flush=True)
         move_in_date = helpers.get_current_cst_date()
-        currently_available_units: Set[Unit] = wc.getUnitListByFloor(floorPlan=floor_plan, moveinDate=move_in_date)
+        currently_available_units: Set[Unit] = wc.getUnitListByFloor(floorPlan=floor_plan, moveinDate=move_in_date, proxy_url=proxy_url)
         print(f"  {currently_available_units} available")
         new_units.update(currently_available_units)
 

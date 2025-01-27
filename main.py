@@ -1,5 +1,6 @@
 import comms_help
 import firebase_storing
+import helpers
 import reception.primary_reception
 from watching_service import run_watermarq_messaging
 from flask import request, jsonify
@@ -35,7 +36,8 @@ def check_units(request):
             return "We had an error processing that :( Christian has been notified"
     else:
         try:
-            result = run_watermarq_messaging(request)
+            proxy_url = helpers.get_random_proxy_url()
+            result = run_watermarq_messaging(request, proxy_url=proxy_url)
             if latest_log:
                 if latest_log.error_message:
                     comms_help.send_telegram_message("", "System functional again lfg")

@@ -6,6 +6,7 @@ import pytz
 from RoomSearch import RoomSearch
 from Unit import Unit
 from typing import Set
+import random
 
 
 def compare_units(existing_units: Set[Unit], new_units: Set[Unit]):
@@ -173,3 +174,29 @@ def get_current_cst_date():
     # Format the date as "12 January 2025"
     formatted_date = current_time_cst.strftime("%d %B %Y")
     return formatted_date
+
+
+def load_proxy_list() -> [str]:
+    return [
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.166.29:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.169.117:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.92:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.97:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.112:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.113:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.116:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.117:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.118:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.167.209:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.170.107:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.90.37:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.170:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.211:a9iprakm5w98@brd.superproxy.io:33335",
+    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.116.13:a9iprakm5w98@brd.superproxy.io:3333"
+  ]
+
+def get_random_proxy_url():
+    proxies = load_proxy_list()
+    proxy_to_use = random.choice(proxies)
+    proxy_url = f"http://{proxy_to_use}"
+    return proxy_url

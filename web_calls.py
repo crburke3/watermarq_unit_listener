@@ -24,24 +24,7 @@ class FloorPlan:
         return f"FloorPlan(name={self.name!r}, id={self.id!r})"
 
 
-def load_proxy_list() -> [str]:
-    return [
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.166.29:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.169.117:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.92:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.97:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.112:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.113:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.116:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.117:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.118:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.167.209:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.170.107:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.90.37:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.170:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.211:a9iprakm5w98@brd.superproxy.io:33335",
-    "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.116.13:a9iprakm5w98@brd.superproxy.io:3333"
-  ]
+
 
 def extract_parameters(onclick_string):
     match = re.search(r"getUnitListByFloor\((.*?)\);", onclick_string)
@@ -72,10 +55,7 @@ def getFloorPlansHtml() -> str:
     return response.text
 
 
-def getFloorPlansHtmlProxy() -> str:
-    proxies = load_proxy_list()
-    proxy_to_use = random.choice(proxies)
-    proxy_url = f"http://{proxy_to_use}"
+def getFloorPlansHtmlProxy(proxy_url: str=None) -> str:
     print(f"using proxy to gather floor plans: {proxy_url}")
     url = "https://app.repli360.com/public/admin/template-render"
     payload = {
@@ -86,15 +66,18 @@ def getFloorPlansHtmlProxy() -> str:
       "source": "",
       "property_id": ""
     }
-    response = requests.post(url, data=payload, proxies={"http": proxy_url, "https": proxy_url})
+    if proxy_url:
+        response = requests.post(url, data=payload, proxies={"http": proxy_url, "https": proxy_url})
+    else:
+        response = requests.post(url, data=payload)
     if response.status_code != 200:
         raise Exception(f'Failed to get floor plans: {response.status_code} | {response.text}')
     return response.text
 
 
-def getAvailableFloorplans() -> [FloorPlan]:
+def getAvailableFloorplans(proxy_url: str=None) -> [FloorPlan]:
     # html = getFloorPlansHtml()
-    html = getFloorPlansHtmlProxy()
+    html = getFloorPlansHtmlProxy(proxy_url)
     soup = BeautifulSoup(html, 'html.parser')
     parent_div = soup.find('div', id='all_available_tab')
     if not parent_div:
@@ -144,7 +127,7 @@ def getAvailableFloorplans() -> [FloorPlan]:
 
 
 def getUnitListByFloor(floorPlan: FloorPlan, moveinDate, site_id="1682", template_type="2", mode="", type_="2d", currentanuualterm="",
-                       AcademicTerm="", RentalLevel=""):
+                       AcademicTerm="", RentalLevel="", proxy_url: str=None):
     url = "https://app.repli360.com/public/admin/getUnitListByFloor"
     headers = {
         "accept": "application/json, text/plain, */*",
@@ -163,7 +146,10 @@ def getUnitListByFloor(floorPlan: FloorPlan, moveinDate, site_id="1682", templat
         "RentalLevel": RentalLevel
     }
 
-    response = requests.post(url, headers=headers, data=payload)
+    if proxy_url:
+        response = requests.post(url, headers=headers, data=payload, proxies={"http": proxy_url, "https": proxy_url})
+    else:
+        response = requests.post(url, headers=headers, data=payload)
     try:
         response.raise_for_status()
         resp_json = response.json()

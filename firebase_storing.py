@@ -123,7 +123,7 @@ def load_room_searches(active=True) -> List[RoomSearch]:
     return searches
 
 
-def save_run_log_to_firebase(successful: bool, error: str=None):
+def save_run_log_to_firebase(successful: bool, error: str=None, proxy: str=None):
     collection_ref = db.collection("watermarq_system").document("run_logs").collection('logs')
     log = RunLog(timestamp=datetime.now(), success=successful, error_message=error)
     log_data = log.to_dict()

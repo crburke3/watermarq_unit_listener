@@ -1,4 +1,5 @@
 import comms_help
+import helpers
 import main
 from reception import primary_reception
 
@@ -7,7 +8,8 @@ phone = '+17048062009'
 
 
 def test_main():
-    main.run_watermarq_messaging(None)
+    proxy_url = helpers.get_random_proxy_url()
+    main.run_watermarq_messaging(None, proxy_url=proxy_url)
 
 
 def test_subscribe_response():
