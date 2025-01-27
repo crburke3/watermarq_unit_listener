@@ -35,8 +35,9 @@ def check_units(request):
             print(f"Failed to handle from_twillio response: {e}")
             return "We had an error processing that :( Christian has been notified"
     else:
+        proxy_url = helpers.get_random_proxy_url()
+        print(f"using proxy url: {proxy_url}")
         try:
-            proxy_url = helpers.get_random_proxy_url()
             result = run_watermarq_messaging(request, proxy_url=proxy_url)
             if latest_log:
                 if latest_log.error_message:
@@ -47,7 +48,7 @@ def check_units(request):
             err_message = f"Something failed: {e}"
             print(err_message)
             comms_help.send_telegram_message("", err_message)
-            firebase_storing.save_run_log_to_firebase(successful=False, error=err_message)
+            firebase_storing.save_run_log_to_firebase(successful=False, error=err_message, proxy=proxy_url)
             return {"error": err_message}, 400
 
 
