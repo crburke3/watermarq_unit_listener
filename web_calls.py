@@ -147,6 +147,7 @@ def getUnitListByFloor(floorPlan: FloorPlan, moveinDate, site_id="1682", templat
     }
 
     if proxy_url:
+        print(f"Using proxy to gather {floorPlan.name} data: {proxy_url}")
         response = requests.post(url, headers=headers, data=payload, proxies={"http": proxy_url, "https": proxy_url})
     else:
         response = requests.post(url, headers=headers, data=payload)
