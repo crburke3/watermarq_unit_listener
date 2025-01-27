@@ -43,6 +43,7 @@ def check_units(request):
             return result
         except Exception as e:
             err_message = f"Something failed: {e}"
+            print(err_message)
             comms_help.send_telegram_message("", err_message)
             firebase_storing.save_run_log_to_firebase(successful=False, error=err_message)
             return {"error": err_message}, 400
