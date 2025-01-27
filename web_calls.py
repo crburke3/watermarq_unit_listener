@@ -163,8 +163,8 @@ def getUnitListByFloor(floorPlan: FloorPlan, moveinDate, site_id="1682", templat
         "RentalLevel": RentalLevel
     }
 
+    response = requests.post(url, headers=headers, data=payload)
     try:
-        response = requests.post(url, headers=headers, data=payload)
         response.raise_for_status()
         resp_json = response.json()
         resp_html = resp_json['str']
@@ -186,7 +186,6 @@ def getUnitListByFloor(floorPlan: FloorPlan, moveinDate, site_id="1682", templat
             except Exception as e:
                 continue
         return set(units)
+    except Exception as e:
+        raise Exception(f'Failed to pull floor plan {floorPlan.name} | {response.status_code} | {response.text} | {e}')
 
-    except requests.exceptions.RequestException as e:
-        print(e)
-        return None
