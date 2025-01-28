@@ -38,14 +38,19 @@ if not firebase_admin._apps:
 
 firebase_db_path = "/old_units"
 db = firestore.client()
-ref = db.collection("watermarq_system").document("old_units")
+main_collection = db.collection("watermarq_system")
+old_units_ref = main_collection.document("old_units")
+sublease_units_ref = main_collection.document("sublease_units")
 
 
-def load_units_from_firebase():
+def load_units_from_firebase(sublease=False):
     print("loading units from firebase...")
     try:
         # Fetch data from Firebase Realtime Database
-        doc = ref.get()
+        if sublease:
+            doc = sublease_units_ref.get()
+        else:
+            doc = old_units_ref.get()
 
         if not doc.exists:
             print(f"Error: No data found at {firebase_db_path}.")
@@ -68,6 +73,9 @@ def load_units_from_firebase():
         for unit in units:
             helpers.add_csv_data(unit)
 
+        if sublease:
+            units = [x for x in units if x.is_sublease]
+
         return parsed_datetime, units
 
     except Exception as e:
@@ -75,7 +83,7 @@ def load_units_from_firebase():
         return None, []
 
 
-def save_units_to_firebase(units):
+def save_units_to_firebase(units, sublease=False):
     last_updated = datetime.utcnow().isoformat()
     data = {
         'last_updated': last_updated,
@@ -84,24 +92,25 @@ def save_units_to_firebase(units):
 
     try:
         # Save data to Firebase Realtime Database
-        ref.set(data)  # This will overwrite the data at the specified path
-
+        if sublease:
+            non_sublease_units = [x for x in units if not x.is_sublease]
+            if len(non_sublease_units) > 0:
+                raise Exception(f'You are attempting to save {len(non_sublease_units)} non sublease units to the sublease section')
+            sublease_units_ref.set(data)
+        else:
+            sub_units = [x for x in units if x.is_sublease]
+            if len(sub_units) > 0:
+                raise Exception(
+                    f'You are attempting to save {len(sub_units)} sublease units to the normal units section')
+            old_units_ref.set(data)  # This will overwrite the data at the specified path
         print(f"Units successfully saved to Firebase at {firebase_db_path}.")
     except Exception as e:
         print(f"Error saving data to Firebase: {e}")
 
 
 def save_room_searches(room_searches: List[RoomSearch]):
-    # Reference to the "watermarq_system" collection and "room_searches" document
-    # doc_ref = db.collection("watermarq_system").document("room_searches")
-    # room_search_dicts = [room_search.to_dict() for room_search in room_searches]
-    # doc_ref.set({
-    #     'room_searches': room_search_dicts
-    # })
-    # print(f"Successfully saved {len(room_search_dicts)} room searches to Firestore.")
     for search in room_searches:
         save_search_args(search.phones[0], room_counts=search.num_rooms, only_exterior=search.only_exterior, name=search.name)
-
 
 
 def load_room_searches(active=True) -> List[RoomSearch]:

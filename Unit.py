@@ -1,7 +1,7 @@
 class Unit:
     def __init__(self, unit_number, price=None, is_exterior_facing=None, primary_exterior_face=None,
                  is_corner_unit=None, corner_type=None, size_rank=None, view_rank=None, notes=None,
-                 floor_plan_type=None, availability_date=None):
+                 floor_plan_type=None, availability_date=None, is_sublease=None, sublease_owner_name=None, sublease_owner_phone=None):
         self.unit_number = unit_number
         self.price = price
         self.is_exterior_facing = is_exterior_facing
@@ -13,6 +13,9 @@ class Unit:
         self.notes = notes
         self.floor_plan_type = floor_plan_type
         self.availability_date = availability_date  # new property
+        self.is_sublease = is_sublease  # new property
+        self.sublease_owner_name = sublease_owner_name  # new property
+        self.sublease_owner_phone = sublease_owner_phone  # new property
 
     def num_rooms(self):
         if not self.floor_plan_type:
@@ -30,10 +33,13 @@ class Unit:
         print(f"unknown floor plan for: {self.unit_number} | ${plan_type}")
         return None
 
+
+
     def __repr__(self):
         emojis = ""
         emojis += "🪟" if self.is_exterior_facing else ""
         emojis += "🥇" if self.is_corner_unit else ""
+        emojis += "🏠" if self.is_townhome() else ""
         val = f"{self.unit_number}{emojis} {self.price}"
         val += f" {self.num_rooms()} rooms" if self.floor_plan_type else ""
         # if self.availability_date:
@@ -53,8 +59,18 @@ class Unit:
             notes=json_data['notes'],
             price=json_data.get('price', None),
             floor_plan_type=json_data.get('floor_plan_type', None),
-            availability_date=json_data.get('availability_date', None)  # load availability date if it exists
+            availability_date=json_data.get('availability_date', None),
+            is_sublease=json_data.get('is_sublease', None),
+            sublease_owner_name=json_data.get('sublease_owner_name', None),
+            sublease_owner_phone=json_data.get('sublease_owner_phone', None)
         )
+
+    def is_townhome(self):
+        if self.notes:
+            if "townhome" in self.notes.lower():
+                return True
+        return False
+
 
     def to_dict(self):
         """
@@ -71,7 +87,10 @@ class Unit:
             'view_rank': self.view_rank,
             'notes': self.notes,
             'floor_plan_type': self.floor_plan_type,
-            'availability_date': self.availability_date  # add availability date to the dictionary
+            'availability_date': self.availability_date,  # add availability date to the dictionary
+            'is_sublease': self.is_sublease,  # add is_sublease to the dictionary
+            'sublease_owner_name': self.sublease_owner_name,  # add sublease_owner_name to the dictionary
+            'sublease_owner_phone': self.sublease_owner_phone  # add sublease_owner_phone to the dictionary
         }
 
     def __eq__(self, other):

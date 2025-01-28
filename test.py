@@ -1,6 +1,7 @@
 import comms_help
 import helpers
 import main
+import sublease_handling
 from reception import primary_reception
 
 
@@ -10,6 +11,23 @@ phone = '+17048062009'
 def test_main():
     proxy_url = helpers.get_random_proxy_url()
     main.run_watermarq_messaging(None, proxy_url=proxy_url)
+
+
+def test_add_sublease_unit():
+    new_unit = sublease_handling.add_sublease_unit(
+        unit_number="261",
+        price="$6,969",
+        floor_plan_type="2R two Bedrooms 1 Baths 712 sq.ft.",
+        subleaser_name="test",
+        subleaser_phone_number="+17048062009",
+        availability_date="1/1/2030",
+        notes="This is a test, its a townhome"
+    )
+    print(new_unit, new_unit.num_rooms())
+
+
+def test_remove_sublease_unit():
+    sublease_handling.remove_sublease_unit(unit_number="222")
 
 
 def test_subscribe_response():
@@ -79,3 +97,9 @@ def test_send_manual_message():
     message = "Subscribe"
     number = "+16106756886"
     resp = primary_reception.handle_reception(number, message)
+
+
+def test_initial_search():
+    from_number = "+17048062009"
+    message = primary_reception.handle_initial_search(from_number)
+    print(message)

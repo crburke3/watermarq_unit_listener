@@ -103,23 +103,29 @@ def filter_units_for_search(search: RoomSearch, removed_units, added_units, pric
 def generate_initial_search_message(search: RoomSearch, units: [Unit]):
     sorted_units = sorted(list(units))
     message = "Here's the units that are currently available in your search\n"
-    message += "I'll text you whenever one with your criteria is added, removed or updated😘\n\n"
+    message += "I'll text you whenever one with your criteria is added, removed or updated 😘\n\n"
     message += "\n".join(f"• {unit_description(obj)}" for obj in sorted_units)
     return message
 
 
-def generate_message(search: RoomSearch, removed_units, added_units, price_changed_units, price_changed_units_data):
+def generate_message(search: RoomSearch, removed_units, added_units, price_changed_units, price_changed_units_data, sublease=False):
     removed_list = sorted(list(removed_units))
     added_list = sorted(list(added_units))
     price_changed = sorted(list(price_changed_units))
     message = f"We've got a watermarq room update 👀\n"
     if len(removed_units) > 0:
-        message += "the following units have been removed from water marq's website 😥\n"
+        if sublease:
+            message += "the follow units are no longer available for sublease 😥\n"
+        else:
+            message += "the following units have been removed from water marq's website 😥\n"
         message += "\n".join(f"• {unit_description(obj)}" for obj in removed_list)
         message += "\n"
 
     if len(added_units) > 0:
-        message += "the following units have been added to watermarqs website 👏\n"
+        if sublease:
+            message += "the following units are now available for sublease 👏\n"
+        else:
+            message += "the following units have been added to watermarqs website 👏\n"
         message += "\n".join(f"• {unit_description(obj)}" for obj in added_list)
         message += "\n"
 
@@ -143,11 +149,17 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
             message += "\n"
         message += "\n"
 
+    if sublease:
+        message += "\n"
+        message += "If you're interested in a sublease, text the unit number and I'll send you their contact info"
+
     return message
 
 
 def unit_description(unit: Unit):
     desc = f"{unit.unit_number} | {unit.price}\n"
+    desc += f"  Sublease 🤝\n" if unit.is_sublease else ""
+    desc += f"  Townhome 🏠\n" if unit.is_townhome() else ""
     desc += f"  {unit.floor_plan_type}\n"
     desc += f"  Availability: {unit.availability_date}\n"
     desc += f"  Num Rooms: {unit.num_rooms()}\n" if unit.floor_plan_type else ""

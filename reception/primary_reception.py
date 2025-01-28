@@ -98,6 +98,9 @@ def handle_initial_search(from_number: str):
     if not search:
         raise Exception(f'could not find search for number: {from_number}')
     last_updated, all_units = firebase_storing.load_units_from_firebase()
+    sublease_updated, sublease_units = firebase_storing.load_units_from_firebase(sublease=True)
+    for sublease in sublease_units:
+        all_units.append(sublease)
     good_units = helpers.filter_units(search, units=all_units)
     print(f"found {len(good_units)} for search: {from_number}")
     if len(good_units) == 0:
