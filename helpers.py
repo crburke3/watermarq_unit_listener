@@ -112,9 +112,9 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
     removed_list = sorted(list(removed_units))
     added_list = sorted(list(added_units))
     price_changed = sorted(list(price_changed_units))
-    message = f"Hey {search.name}. We've got a watermarq room update 👀\n"
+    message = f"We've got a watermarq room update 👀\n"
     if len(removed_units) > 0:
-        message += "the following units have been removed from watermarqs website 😥\n"
+        message += "the following units have been removed from water marq's website 😥\n"
         message += "\n".join(f"• {unit_description(obj)}" for obj in removed_list)
         message += "\n"
 
@@ -155,7 +155,7 @@ def unit_description(unit: Unit):
     desc += f"  Corner Unit 🥇\n" if unit.corner_type else ""
     desc += f"  View Ranking: {int(unit.view_rank) * '⭐'}\n" if unit.view_rank else ""
     desc += f"  View Facing: {unit.primary_exterior_face} {view_emoji(unit)}\n" if unit.primary_exterior_face else ""
-    desc += f"  {unit.notes}" if unit.notes else ""
+    desc += f"  Notes: {unit.notes}\n" if unit.notes else ""
     return desc
 
 

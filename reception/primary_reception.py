@@ -48,7 +48,7 @@ def handle_subscription(from_number: str):
     response = "So you've heard about me 👀\n"
     response += "I'm here to let you know when rooms open up, are removed or have their price updated\n\n"
     response += "Standard text and mms rates apply 💅\n\n"
-    response += "Thank's for your intrest 🙇 you've been added to the waitlist\n\n"
+    response += "Thank's for your interest 🙇 you've been added to the waitlist\n\n"
     response += "If you know the secret code, send it in your next text\n\n"
     response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
     response += "You can always text 'unsubscribe' to opt out - no worries G"
@@ -60,7 +60,7 @@ def handle_secret_code(from_number: str, message: str):
     stripped_msg = message.replace(' ', "")
     if SECRET_MESSAGE in stripped_msg:
         response = "Congratulations you're in 😎\n\n"
-        response += "Dont forget to tell them Christian Burke sent you if you end up signing \n\n"
+        response += "Don't forget to put Christian Burke on your application if you end up signing \n\n"
         response += 'How many rooms are you looking for? (1...3)\n\n'
         response += 'Ex: 1\n'
         response += "Ex: 1,2,3"
@@ -76,7 +76,7 @@ def handle_room_count(from_number: str, message: str):
     nums = [int(room_count) for room_count in room_counts_raw if room_count in ['1','2','3']]
     assert len(nums) > 0, "No recognized numbers, please try again EX: 1,2,3"
     firebase_storing.save_search_args(from_number, room_counts=nums)
-    response = "Solid, would do you only want to search for exterior facing rooms?\n\n"
+    response = "Solid, do you only want to search for exterior facing rooms?\n\n"
     response += "(yes or no)"
     return response
 
