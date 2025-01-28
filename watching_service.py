@@ -1,7 +1,6 @@
 import comms_help
 import firebase_storing
 import helpers
-import local_storing
 import web_calls as wc
 from RoomSearch import RoomSearch
 from Unit import Unit
@@ -15,6 +14,8 @@ MIN_SECS_BETWEEN_RUNS = 1
 def run_watermarq_messaging(args, proxy_url: str = None):
     # Load existing units from local storage
     searches: [RoomSearch] = firebase_storing.load_room_searches()
+    searches = [x for x in searches if x.is_authorized]
+    searches = [x for x in searches if x.is_active]
     if len(searches) == 0:
         print("skipping room search cause no active searches")
         return {"message": "no room searches, skipping scraping"}, 200

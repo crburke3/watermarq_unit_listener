@@ -12,18 +12,20 @@ class UnitInterest:
 
 class RoomSearch:
     def __init__(self, phones: List[str], name: str = None, num_rooms: List[int] = None,
-                 only_exterior: bool = None, is_active=True, interested_units: List[UnitInterest] = None):
+                 only_exterior: bool = None, is_active=True, interested_units: List[UnitInterest] = None,
+                 is_authorized: bool = False):
         self.name = name
         self.phones = phones
         self.num_rooms = num_rooms
         self.only_exterior = only_exterior
         self.is_active = is_active
         self.interested_units = interested_units if interested_units is not None else []
+        self.is_authorized = is_authorized
 
     def __repr__(self):
-        return (f"RoomSearch(name={self.name}, phones={self.phones}, num_rooms={self.num_rooms}, "
-                f"only_exterior={self.only_exterior}, interested_units={self.interested_units}) "
-                f"active: {self.is_active}")
+        auth_emoji = "✅" if self.is_authorized else "❌"
+        active_emoji = "✅" if self.is_active else "❌"
+        return (f"{self.phones} | Auth: {auth_emoji} | Active: {active_emoji} | {self.num_rooms} | {self.only_exterior} | {self.interested_units}")
 
     @classmethod
     def from_dict(cls, data: Dict) -> 'RoomSearch':
@@ -40,7 +42,8 @@ class RoomSearch:
             num_rooms=data['num_rooms'],
             only_exterior=data['only_exterior'],
             is_active=data['is_active'],
-            interested_units=interested_units
+            interested_units=interested_units,
+            is_authorized=data.get('is_authorized', False)  # Default to False if not provided
         )
 
     def to_dict(self) -> Dict:
@@ -53,6 +56,7 @@ class RoomSearch:
             'num_rooms': self.num_rooms,
             'only_exterior': self.only_exterior,
             'is_active': self.is_active,
+            'is_authorized': self.is_authorized,
             'interested_units': [
                 {'unit_number': unit.unit_number, 'interest_count': unit.interest_count}
                 for unit in self.interested_units

@@ -53,14 +53,25 @@ def find_message_type(message: str):
 
 
 def handle_subscription(from_number: str):
-    response = "So you've heard about me 👀\n"
+    existing_search = firebase_storing.get_search(from_number)
+    response = "So you've heard about me 👀\n\n"
     response += "I'm here to let you know when rooms open up, are removed or have their price updated\n\n"
     response += "Standard text and mms rates apply 💅\n\n"
-    response += "Thank's for your interest 🙇 you've been added to the waitlist\n\n"
-    response += "If you know the secret code, send it in your next text\n\n"
-    response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
-    response += "You can always text 'unsubscribe' to opt out - no worries G"
-    firebase_storing.save_search_args(from_number, is_active=False)
+    if not existing_search:
+        response += "Thank's for your interest 🙇 you've been added to the waitlist\n\n"
+        response += "If you know the secret code, send it in your next text\n\n"
+        response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
+        response += "You can always text 'unsubscribe' to opt out - no worries G"
+        firebase_storing.save_search_args(from_number, is_active=False)
+    else:
+        response += "You can always text 'unsubscribe' to opt out - no worries G\n\n"
+        response += "Look's like you're already registered, so lets get to it.\n\n"
+        response += "Don't forget to put Christian Burke on your application if you end up signing \n\n"
+        response += 'How many rooms are you looking for? (1...3)\n\n'
+        response += 'Ex: 1\n'
+        response += "Ex: 2,3"
+        existing_search.is_authorized = True
+        existing_search.is_active = True
     return response
 
 
@@ -72,7 +83,7 @@ def handle_secret_code(from_number: str, message: str):
         response += 'How many rooms are you looking for? (1...3)\n\n'
         response += 'Ex: 1\n'
         response += "Ex: 1,2,3"
-        firebase_storing.save_search_args(from_number, is_active=True)
+        firebase_storing.save_search_args(from_number, is_active=True, is_authorized=True)
     else:
         response = "Incorrect secret code :( I bet you're cool though :*"
     return response
@@ -122,14 +133,17 @@ def handle_initial_search(from_number: str):
 
 
 def handle_unsubscribe(from_number: str):
-    firebase_storing.delete_search(from_number)
-    response = "I wont text you anymore, if you want to jump back in just send SUBSCRIBE"
+    existing_search = firebase_storing.get_search(from_number)
+    if existing_search:
+        existing_search.is_active = False
+        firebase_storing.save_search(from_number, existing_search)
+    response = "I wont text you anymore, if you want to jump back in just send 'Subscribe'"
     return response
 
 
 def handle_restart(from_number: str):
-    firebase_storing.delete_search(from_number)
-    response = "alrighty I cleared your prev search, text SUBSCRIBE to start again"
+    firebase_storing.reset_search(from_number)
+    response = "alrighty I cleared your prev search, text 'Subscribe' to start again"
     return response
 
 
@@ -199,7 +213,7 @@ def handle_reception(from_number: str, raw_message: str):
 
     search = firebase_storing.get_search(from_number)
     if search:
-        if search.is_active:
+        if search.is_authorized:
             if message_type == MessageType.BUILDING:
                 response = handle_building(from_number)
             if message_type == MessageType.ROOM_COUNT:

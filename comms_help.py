@@ -12,6 +12,8 @@ load_dotenv()
 account_sid = os.getenv('twilio_sid')
 auth_token = os.getenv('twilio_auth_token')
 twilio_client = Client(account_sid, auth_token)
+is_dev = os.getenv('is_dev')
+print(f"in dev: {is_dev}")
 
 
 def send_telegram_message(number: str, message: str):
@@ -57,8 +59,14 @@ def send_text(number: str, message: str, chunk_size: int = 800):
 
 
 def send_message(number: str, message: str):
-    send_text(number, message)
     send_telegram_message(number, message)
+    if is_dev:
+        if number == "+17048062009":
+            send_text(number, message)
+        else:
+            print(f"DEV SKIPPING OUTBOUND SMS: {number} | {message}")
+    else:
+        send_text(number, message)
 
 
 def send_image(number: str, message: str, image_url: str):

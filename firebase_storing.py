@@ -42,6 +42,7 @@ main_collection = db.collection("watermarq_system")
 old_units_ref = main_collection.document("old_units")
 sublease_units_ref = main_collection.document("sublease_units")
 args_collection = main_collection.document("temp_search_main").collection('temp_searches')
+unit_change_collection = main_collection.document("search_changes_main").collection("search_changes")
 
 def load_units_from_firebase(sublease=False):
     print("loading units from firebase...")
@@ -127,7 +128,7 @@ def save_room_searches(room_searches: List[RoomSearch]):
         save_search_args(search.phones[0], room_counts=search.num_rooms, only_exterior=search.only_exterior, name=search.name)
 
 
-def load_room_searches(active=True) -> List[RoomSearch]:
+def load_room_searches() -> List[RoomSearch]:
     # Reference to the "watermarq_system" collection and "room_searches" document
     collection_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
     # query = collection_ref.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
@@ -136,11 +137,7 @@ def load_room_searches(active=True) -> List[RoomSearch]:
     for doc in results:
         doc_data = doc.to_dict()
         search = RoomSearch.from_dict(doc_data)
-        if active:
-            if search.is_active:
-                searches.append(search)
-        else:
-            searches.append(search)
+        searches.append(search)
     # Get the document
     print(f"Successfully loaded {len(searches)} room searches.")
     return searches
@@ -164,7 +161,7 @@ def get_most_recent_run_log():
     return None
 
 
-def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior: bool=None, max_price:int=None, name:str = None, is_active=None):
+def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior: bool=None, max_price:int=None, name:str = None, is_active=None, is_authorized=None):
     doc_ref = args_collection.document(phone_number)
     search_doc = doc_ref.get()
     if search_doc.exists:
@@ -183,7 +180,8 @@ def save_search_args(phone_number: str, room_counts: [int] = None, only_exterior
         search.name = name
     if is_active is not None:
         search.is_active = is_active
-
+    if is_authorized is not None:
+        search.is_authorized = is_authorized
     search_export = search.to_dict()
     doc_ref.set(search_export)
     return search
@@ -196,8 +194,7 @@ def save_search(phone_number: str, search: RoomSearch):
 
 
 def get_search(phone_number: str):
-    args_ref = db.collection("watermarq_system").document("temp_search_main").collection('temp_searches')
-    doc_ref = args_ref.document(phone_number)
+    doc_ref = args_collection.document(phone_number)
     search_doc = doc_ref.get()
     if search_doc.exists:
         search_data = search_doc.to_dict()
@@ -212,11 +209,20 @@ def delete_search(phone_number: str):
     doc_ref.delete()
 
 
+def reset_search(phone_number: str):
+    search = get_search(phone_number)
+    if not search:
+        return
+    search.num_rooms = []
+    search.only_exterior = False
+    save_search(phone_number, search)
+    return search
+
 def save_before_and_after(before: list[Unit], after_removed: set[Unit], after_added: set[Unit], after_changed: set[Unit]):
     print("saving before and after")
     try:
         doc_name = datetime.now().isoformat()
-        doc_ref = args_collection.document(doc_name)
+        doc_ref = unit_change_collection.document(doc_name)
         before_sorted = sorted(before)
         doc_data = {
             "timestamp": datetime.now().isoformat(),

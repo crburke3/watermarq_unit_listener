@@ -1,10 +1,12 @@
+import os
+os.environ["is_dev"] = "true"
+import admin_functions
 import comms_help
 import firebase_storing
 import helpers
 import main
 import sublease_handling
 from reception import primary_reception
-
 
 phone = '+17048062009'
 
@@ -83,6 +85,7 @@ def test_restart():
     assert message_type == primary_reception.MessageType.RESTART
     resp = primary_reception.handle_reception(phone, message)
 
+
 def test_mms():
     comms_help.send_image(phone, "WOO22", "https://storage.googleapis.com/public-random/watermarq_map.png")
 
@@ -145,3 +148,5 @@ def test_send_message_to_all_subscribers():
             comms_help.send_text(user_phone, message)
 
 
+def test_activate_search():
+    admin_functions.activate_search("+17048062009")
