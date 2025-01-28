@@ -72,7 +72,6 @@ def handle_subscription(from_number: str):
             response += 'Ex: 1\n'
             response += "Ex: 2,3"
             existing_search.is_authorized = True
-            existing_search.is_active = True
             firebase_storing.save_search(from_number, existing_search)
             return response
         else:
@@ -110,9 +109,9 @@ def handle_room_count(from_number: str, message: str):
 
 def handle_only_exterior(from_number: str, message: str):
     if 'yes' in message:
-        firebase_storing.save_search_args(from_number, only_exterior=True)
+        firebase_storing.save_search_args(from_number, only_exterior=True, is_active=True)
     elif 'no' in message:
-        firebase_storing.save_search_args(from_number, only_exterior=False)
+        firebase_storing.save_search_args(from_number, only_exterior=False, is_active=True)
     else:
         raise Exception('Did not find "yes" or "no" please try again')
     response = "Tight. Let me search... "

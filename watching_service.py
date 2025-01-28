@@ -16,6 +16,7 @@ def run_watermarq_messaging(args, proxy_url: str = None):
     searches: [RoomSearch] = firebase_storing.load_room_searches()
     searches = [x for x in searches if x.is_authorized]
     searches = [x for x in searches if x.is_active]
+    searches = [x for x in searches if x.num_rooms]
     if len(searches) == 0:
         print("skipping room search cause no active searches")
         return {"message": "no room searches, skipping scraping"}, 200
