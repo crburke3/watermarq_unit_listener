@@ -16,9 +16,10 @@ def test_main():
     main.run_watermarq_messaging(None, proxy_url=proxy_url)
 
 
+sublease_number = "261"
 def test_add_sublease_unit():
     new_unit = sublease_handling.add_sublease_unit(
-        unit_number="261",
+        unit_number=sublease_number,
         price="$6,969",
         floor_plan_type="2R two Bedrooms 1 Baths 712 sq.ft.",
         subleaser_name="test",
@@ -30,7 +31,7 @@ def test_add_sublease_unit():
 
 
 def test_remove_sublease_unit():
-    sublease_handling.remove_sublease_unit(unit_number="222")
+    sublease_handling.remove_sublease_unit(unit_number=sublease_number)
 
 
 def test_subscribe_response():
@@ -39,8 +40,12 @@ def test_subscribe_response():
     print(resp)
 
 
+def test_activate_search():
+    admin_functions.activate_search("+17048062009")
+
+
 def test_secret_message_wrong():
-    message = "shit"
+    message = "bullocks"
     resp = primary_reception.handle_reception(phone, message)
     print(resp)
 
@@ -148,5 +153,3 @@ def test_send_message_to_all_subscribers():
             comms_help.send_text(user_phone, message)
 
 
-def test_activate_search():
-    admin_functions.activate_search("+17048062009")

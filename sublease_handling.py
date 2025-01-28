@@ -26,6 +26,7 @@ def add_sublease_unit(unit_number: str, subleaser_name: str, subleaser_phone_num
     units_to_save = list(units_to_save)
     firebase_storing.save_units_to_firebase(units=units_to_save, sublease=True)
     searches: [RoomSearch] = firebase_storing.load_room_searches()
+    searches = helpers.only_active_and_authorized_searches(searches)
     removed_units = {}
     added_units = {new_unit}
     price_changed_units = {}
@@ -49,6 +50,7 @@ def remove_sublease_unit(unit_number: str):
     filtered_subleases = [x for x in existing_subleases if x.unit_number != unit_number]
     firebase_storing.save_units_to_firebase(units=filtered_subleases, sublease=True)
     searches: [RoomSearch] = firebase_storing.load_room_searches()
+    searches = helpers.only_active_and_authorized_searches(searches)
     removed_units = {unit}
     added_units = {}
     price_changed_units = {}

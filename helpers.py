@@ -71,7 +71,15 @@ def add_csv_data(unit):
             unit.notes = csv_unit.notes
 
 
+def only_active_and_authorized_searches(searches: [RoomSearch]):
+    active = [x for x in searches if x.is_active]
+    authorized = [x for x in active if x.is_authorized]
+    return authorized
+
+
 def filter_units(search: RoomSearch, units: [Unit]):
+    if not search.num_rooms:
+        raise Exception(f"Failed to filter units because search {search.phones} does not have num rooms")
     search_units = set(filter(lambda unit: unit.num_rooms() in search.num_rooms, units))
     ret_units = set()
     if search.only_exterior:

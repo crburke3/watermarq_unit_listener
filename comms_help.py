@@ -49,24 +49,24 @@ def send_text(number: str, message: str, chunk_size: int = 800):
         # Send each chunk using Twilio
         should_sleep = len(message_chunks) > 1
         for chunk in message_chunks:
-            resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=chunk)
-            print(f"[TEXT:Sent] {number} | {chunk} | {resp.sid} | {resp.status}")
-            if should_sleep:
-                time.sleep(1)
-
+            if is_dev:
+                print(f"DEV SKIPPING OUTBOUND SMS: {number} | {message}")
+                return
+            else:
+                send_twillio_text(number, chunk)
+                if should_sleep:
+                    time.sleep(1)
     except Exception as e:
         print(f"Failed to send text: {e}")
+
+def send_twillio_text(number: str, message: str):
+    resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=message)
+    print(f"[TEXT:Sent] {number} | {message} | {resp.sid} | {resp.status}")
 
 
 def send_message(number: str, message: str):
     send_telegram_message(number, message)
-    if is_dev:
-        if number == "+17048062009":
-            send_text(number, message)
-        else:
-            print(f"DEV SKIPPING OUTBOUND SMS: {number} | {message}")
-    else:
-        send_text(number, message)
+    send_text(number, message)
 
 
 def send_image(number: str, message: str, image_url: str):

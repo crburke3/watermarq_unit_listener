@@ -25,7 +25,7 @@ class RoomSearch:
     def __repr__(self):
         auth_emoji = "✅" if self.is_authorized else "❌"
         active_emoji = "✅" if self.is_active else "❌"
-        return (f"{self.phones} | Auth: {auth_emoji} | Active: {active_emoji} | {self.num_rooms} | {self.only_exterior} | {self.interested_units}")
+        return f"{self.phones} | Auth: {auth_emoji} | Active: {active_emoji} | {self.num_rooms} | {self.only_exterior} | {self.interested_units}"
 
     @classmethod
     def from_dict(cls, data: Dict) -> 'RoomSearch':
