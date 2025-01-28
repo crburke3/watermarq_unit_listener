@@ -65,7 +65,7 @@ def send_twillio_text(number: str, message: str):
 
 
 def send_message(number: str, message: str):
-    send_telegram_message(number, message)
+    send_telegram_message(number, f"TO: {number}: "+ message)
     send_text(number, message)
 
 
