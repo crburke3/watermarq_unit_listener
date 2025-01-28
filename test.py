@@ -64,7 +64,7 @@ def test_room_number_response_single():
 
 
 def test_room_number_response_multiple():
-    message = '2,3'
+    message = '1,2,3'
     message_type = primary_reception.find_message_type(message)
     assert message_type == primary_reception.MessageType.ROOM_COUNT
     resp = primary_reception.handle_reception(phone, message)
@@ -115,7 +115,7 @@ def test_initial_search():
 
 
 def test_unit_interest():
-    unit_number = "261"
+    unit_number = "514"
     message = primary_reception.handle_unit_interest("+17048062009", unit_number)
     print(message)
 

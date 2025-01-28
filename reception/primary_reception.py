@@ -63,19 +63,23 @@ def handle_subscription(from_number: str):
         response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
         response += "You can always text 'unsubscribe' to opt out - no worries G"
         firebase_storing.save_search_args(from_number, is_active=False)
-    if existing_search.is_authorized:
-        response += "You can always text 'unsubscribe' to opt out - no worries G\n\n"
-        response += "Look's like you're already registered, so lets get to it.\n\n"
-        response += "Don't forget to put Christian Burke as your referral on your application if you end up signing \n\n"
-        response += 'How many rooms are you looking for? (1...3)\n\n'
-        response += 'Ex: 1\n'
-        response += "Ex: 2,3"
-        existing_search.is_authorized = True
-        existing_search.is_active = True
-    else:
-        response += "You are already registered on the waitlist, please send the secret code to get after it\n"
-        response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
-        response += "You can always text 'unsubscribe' to opt out - no worries G"
+    if existing_search:
+        if existing_search.is_authorized:
+            response += "You can always text 'unsubscribe' to opt out - no worries G\n\n"
+            response += "Look's like you're already registered, so lets get to it.\n\n"
+            response += "Don't forget to put Christian Burke as your referral on your application if you end up signing \n\n"
+            response += 'How many rooms are you looking for? (1...3)\n\n'
+            response += 'Ex: 1\n'
+            response += "Ex: 2,3"
+            existing_search.is_authorized = True
+            existing_search.is_active = True
+            firebase_storing.save_search(from_number, existing_search)
+            return response
+        else:
+            response += "You are already registered on the waitlist, please send the secret code to get after it\n"
+            response += "Otherwise, please wait for a text coming in the next few days/weeks\n\n"
+            response += "You can always text 'unsubscribe' to opt out - no worries G"
+            return response
     return response
 
 
