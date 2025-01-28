@@ -117,22 +117,22 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
     message = f"We've got a watermarq room update 👀\n"
     if len(removed_units) > 0:
         if sublease:
-            message += "the follow units are no longer available for sublease 😥\n"
+            message += "the follow units are no longer available for sublease 😥\n\n"
         else:
-            message += "the following units have been removed from water marq's website 😥\n"
+            message += "the following units have been removed from water marq's website 😥\n\n"
         message += "\n".join(f"• {unit_description(obj)}" for obj in removed_list)
         message += "\n"
 
     if len(added_units) > 0:
         if sublease:
-            message += "the following units are now available for sublease 👏\n"
+            message += "the following units are now available for sublease 👏\n\n"
         else:
-            message += "the following units have been added to watermarqs website 👏\n"
+            message += "the following units have been added to watermarqs website 👏\n\n"
         message += "\n".join(f"• {unit_description(obj)}" for obj in added_list)
         message += "\n"
 
     if len(price_changed_units) > 0:
-        message += "the following units have had their prices changed 🤔\n"
+        message += "the following units have had their prices changed 🤔\n\n"
         for price_unit in price_changed:
             message += f"• {unit_description(price_unit)}"
             price_change_item = None
@@ -152,7 +152,6 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
         message += "\n"
 
     if sublease:
-        message += "\n"
         message += "If you're interested in a sublease, text the unit number and I'll send you their contact info"
 
     return message

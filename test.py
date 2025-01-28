@@ -1,4 +1,5 @@
 import comms_help
+import firebase_storing
 import helpers
 import main
 import sublease_handling
@@ -109,3 +110,38 @@ def test_unit_interest():
     unit_number = "261"
     message = primary_reception.handle_unit_interest("+17048062009", unit_number)
     print(message)
+
+
+def test_send_message_to_all_subscribers():
+    message = "This is christian here 😼, I've updated the system 🐱‍💻\n\n"
+    message += "You can now sublease your apt through this system 😈\n"
+    message += "I'll be adding a way to do this through texting in here, but for now you need to text me personally.\n"
+    message += "Text the following info my personal number: 704-806-2009\n\n"
+    message += " - Unit number\n"
+    message += " - Floor plan ex: 1F One Bedroom 1 Bath 706 - 788 sq.ft.\n"
+    message += " - Your Price\n"
+    message += " - When the unit will start being available ex: 1/20/2025\n"
+    message += " - Your Name or psuedonym\n"
+    message += " - Any notes you'd like included\n"
+    message += " - How you'd like to be contacted (your email or your phone number)\n\n"
+    message += "By sending me this info, you agree that this system can share your name/psuedonym and contact info with anyone who expresses interest in your unit. " \
+               "Any user will be able to text this service to recieve your contact info in regards to subleasing your apt. " \
+               "Currently there are 23 people signed up for this system 🎉.\n\n" \
+               "Oh also, the system will text you whenever someone expressed interest 👀.\n"
+    message += "Your subleased unit will show up in the search results like this (subject to change): \n\n"
+    message += "• 261 | $6,969\n"
+    message += "  Sublease 🤝\n"
+    message += "  Townhome 🏠\n"
+    message += "  2R two Bedrooms 1 Baths 712 sq.ft.\n"
+    message += "  Availability: 1/1/2030\n"
+    message += "  Num Rooms: 2\n"
+    message += "  Exterior Facing 🪟\n"
+    message += "  View Facing: Townhome 🏘️\n"
+    message += "  Notes: It totally wasn't me who broke the bedroom window\n"
+
+    searches = firebase_storing.load_room_searches()
+    for search in searches:
+        for user_phone in search.phones:
+            comms_help.send_text(user_phone, message)
+
+
