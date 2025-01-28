@@ -27,7 +27,7 @@ def find_message_type(message: str):
     stripped_msg = lower_message.replace(' ', "")
     if stripped_msg in ['subscribe', 'start']:
         return MessageType.SUBSCRIBE
-    if stripped_msg in ['unsubscribe', 'end']:
+    if stripped_msg in ['unsubscribe', 'end', 'stop']:
         return MessageType.UNSUBSCRIBE
     if stripped_msg == 'restart':
         return MessageType.RESTART
