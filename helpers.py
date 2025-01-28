@@ -38,6 +38,8 @@ def compare_units(existing_units: Set[Unit], new_units: Set[Unit]):
     return removed_units, added_units, price_changed_units_set, price_changed_units
 
 
+def find_unit(units: [Unit], unit_number: str):
+    return next((u for u in units if u.unit_number == unit_number), None)
 
 def load_unit_csv():
     csv_file_path = "watermark_units.csv"

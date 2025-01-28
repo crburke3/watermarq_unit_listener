@@ -43,7 +43,7 @@ def add_sublease_unit(unit_number: str, subleaser_name: str, subleaser_phone_num
 
 def remove_sublease_unit(unit_number: str):
     last_updated, existing_subleases = firebase_storing.load_units_from_firebase(sublease=True)
-    unit = next((u for u in existing_subleases if u.unit_number == unit_number), None)
+    unit = helpers.find_unit(existing_subleases, unit_number)
     if not unit:
         raise Exception(f"failed to find unit: {unit_number}")
     filtered_subleases = [x for x in existing_subleases if x.unit_number != unit_number]

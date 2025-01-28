@@ -5,6 +5,8 @@ import re
 import helpers
 import time
 
+from Unit import Unit
+
 SECRET_MESSAGE = 'thxchristian'
 
 
@@ -17,6 +19,7 @@ class MessageType(Enum):
     RESTART="RESTART"
     BUILDING="BUILDING"
     SECRET_MESSAGE="SECRET_MESSAGE"
+    UNIT_INTEREST="UNIT_INTEREST"
 
 
 def find_message_type(message: str):
@@ -33,10 +36,15 @@ def find_message_type(message: str):
     if stripped_msg in ["thxchristian", "fuckyou"]:
         return MessageType.SECRET_MESSAGE
 
-    pattern = r'^\d+(\s*,\s*\d+)*$'
-    is_room_count = bool(re.match(pattern, stripped_msg))
+    room_count_pattern = r'^\d+(\s*,\s*\d+)*$'
+    is_room_count = bool(re.match(room_count_pattern, stripped_msg))
     if is_room_count:
         return MessageType.ROOM_COUNT
+
+    unit_number_pattern = r"^\d{3}$"
+    is_unit_number = bool(re.match(unit_number_pattern, stripped_msg))
+    if is_unit_number:
+        return MessageType.UNIT_INTEREST
 
     if stripped_msg in ['yes', 'no']:
         return MessageType.ONLY_EXTERIOR
@@ -132,10 +140,40 @@ def handle_building(from_number: str):
     return "sending you the map..."
 
 
+def handle_unit_interest(from_number: str, unit_number: str):
+    last_updated, website_units = firebase_storing.load_units_from_firebase()
+    sublease_updated, sublease_units = firebase_storing.load_units_from_firebase(sublease=True)
+    website_unit = helpers.find_unit(website_units, unit_number)
+    sublease_unit = helpers.find_unit(sublease_units, unit_number)
+    if not website_unit and not sublease_unit:
+        message = "I don't have any information on that unit 😞\n"
+        message += "Its either been removed from the webiste/sublease list or was never there"
+        return message
+    firebase_storing.save_unit_interest(from_number=from_number, unit_number=unit_number)
+    if website_unit:
+        message = "This unit is being leased by Water Marq 👔\n"
+        message += "You can apply to live here on the Water Marq webiste:\n"
+        message += "https://www.watermarqaustin.com/floor-plans\n\n"
+        message += "⚠️ To keep this service alive - PLEASE add 'Christian Burke' as the referral on your application ⚠️"
+        return message
+    if sublease_unit:
+        assert isinstance(sublease_unit, Unit)
+        assert sublease_unit.is_sublease
+        message = "This unit is being subleased 🤝\n\n"
+        message += f"You'll need to contact {sublease_unit.sublease_owner_name}\n"
+        message += f"{sublease_unit.sublease_owner_phone}\n\n"
+        message += "⚠️ To keep this service alive - PLEASE let them know 'Christian Burke' sent you ⚠️"
+        if sublease_unit.sublease_owner_phone:
+            subleaser_message = f"Someone is interested in your unit: {sublease_unit.unit_number} 👀"
+            comms_help.send_message(sublease_unit.sublease_owner_phone, subleaser_message)
+        return message
+
+
 def handle_reception(from_number: str, raw_message: str):
     print(f"[TEXT:Recieved] {from_number} | {raw_message}")
     comms_help.send_telegram_message("", f"RECIEVED|{from_number}: {raw_message}")
     message = raw_message.lower()
+    stripped_msg = message.replace(' ', "")
     message_type = find_message_type(message)
     response = "I don't know that one :( Plz try again"
     if message_type == MessageType.SUBSCRIBE:
@@ -154,6 +192,11 @@ def handle_reception(from_number: str, raw_message: str):
         response = handle_restart(from_number)
         comms_help.send_message(from_number, response)
         return response
+    if message_type == MessageType.UNIT_INTEREST:
+        response = handle_unit_interest(from_number=from_number, unit_number=stripped_msg)
+        comms_help.send_message(from_number, response)
+        return response
+
     search = firebase_storing.get_search(from_number)
     if search:
         if search.is_active:

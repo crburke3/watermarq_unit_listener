@@ -103,3 +103,9 @@ def test_initial_search():
     from_number = "+17048062009"
     message = primary_reception.handle_initial_search(from_number)
     print(message)
+
+
+def test_unit_interest():
+    unit_number = "261"
+    message = primary_reception.handle_unit_interest("+17048062009", unit_number)
+    print(message)
