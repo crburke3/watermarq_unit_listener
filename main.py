@@ -77,50 +77,14 @@ def check_units(request):
             return jsonify({"error": str(e)}), 200
 
 
-
-    elif "add_sublease" in request.url:
-        if request.method != "POST":
-            return jsonify({"error": "Invalid request method. Use POST."}), 405
-        try:
-            apt_number = request.form.get("unit_number")
-            subleaser_name = request.form.get("subleaser_name")
-            subleaser_phone = request.form.get("subleaser_phone_number")
-            floor_plan_type = request.form.get("floor_plan_type")
-            price = request.form.get("price")
-            availability_date = request.form.get("availability_date")
-            notes = request.form.get("notes", None)
-            if not apt_number or not subleaser_name or not subleaser_phone or not price:
-                return jsonify({"error": "Missing required fields: 'unit_number' or 'subleaser_name' or 'subleaser_phone_number' or 'price'"}), 400
-            new_unit = sublease_handling.add_sublease_unit(
-                unit_number=apt_number,
-                price=price,
-                subleaser_name=subleaser_name,
-                subleaser_phone_number=subleaser_phone,
-                availability_date=availability_date,
-                floor_plan_type=floor_plan_type,
-                notes=notes)
-            return jsonify({"unit": new_unit.to_dict()}), 401
-        except Exception as e:
-            return jsonify({"error": str(e)}), 401
-
-
-    elif "remove_sublease" in request.url:
-        try:
-            unit_number = request.form.get("unit_number")
-            sublease_handling.remove_sublease_unit(unit_number=unit_number)
-            return jsonify({"message": "success"}), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 401
-
-
     elif "process_sms" in request.url:
         print(f"processing SMS")
         try:
             request_json = request.get_json(silent=True)
             print(f"Processing with json: {request_json}")
-            if not request_json and 'data' in request_json and 'schedule_time' in request_json:
+            if not request_json and 'to_number' in request_json and 'message' in request_json:
                 raise Exception("invalid data format")
-            sms_request = FutureSMSRequest.from_json(request_json['data'])
+            sms_request = FutureSMSRequest.from_json(request_json)
             queue_service.process_sms(sms_request)
             return jsonify({"message": "success"}), 200
         except Exception as e:
