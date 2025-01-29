@@ -1,7 +1,5 @@
 import datetime
-
 from dotenv import load_dotenv
-
 from classes.FutureSMSRequest import FutureSMSRequest
 
 load_dotenv()

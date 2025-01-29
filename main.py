@@ -114,14 +114,17 @@ def check_units(request):
 
 
     elif "process_sms" in request.url:
+        print(f"processing SMS")
         try:
             request_json = request.get_json(silent=True)
+            print(f"Processing with json: {request_json}")
             if not request_json and 'data' in request_json and 'schedule_time' in request_json:
                 raise Exception("invalid data format")
             sms_request = FutureSMSRequest.from_json(request_json['data'])
             queue_service.process_sms(sms_request)
             return jsonify({"message": "success"}), 200
         except Exception as e:
+            print(f"FAILED to process_sms: {e}")
             return jsonify({"error": str(e)}), 401
 
 
