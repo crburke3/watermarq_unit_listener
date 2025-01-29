@@ -1,4 +1,9 @@
+import datetime
+
 from dotenv import load_dotenv
+
+from classes.FutureSMSRequest import FutureSMSRequest
+
 load_dotenv()
 import queue_service
 import admin_functions
@@ -154,7 +159,15 @@ def test_send_message_to_all_subscribers():
             comms_help.send_text(user_phone, message)
 
 
-def test_queue_notification():
+def test_queue_sms():
     to_number = "+17048062009"
     message = "testing future notification"
     queue_service.queue_text_notification(phone_number=to_number, message=message, days_delay=0, seconds_delay=30)
+
+
+def test_process_sms():
+    future_sms = FutureSMSRequest(to_number=phone, message="this is from the past",
+                                  original_time=datetime.datetime.now(),
+                                  actual_time=datetime.datetime.now())
+    queue_service.process_sms(future_sms)
+

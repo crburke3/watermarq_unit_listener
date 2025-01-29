@@ -1,6 +1,7 @@
 import comms_help
 import firebase_storing
 import helpers
+import queue_service
 import web_calls as wc
 from RoomSearch import RoomSearch
 from Unit import Unit
@@ -61,7 +62,13 @@ def run_watermarq_messaging(args, proxy_url: str = None):
         print(f"sending message to {search.name}")
         comms_help.send_telegram_message("", message)
         for phone in search.phones:
-            comms_help.send_text(phone, message)
+            if search.days_delay or search.seconds_delay:
+                queue_service.queue_text_notification(phone_number=phone,
+                                                      message=message,
+                                                      days_delay=search.days_delay,
+                                                      seconds_delay=search.seconds_delay)
+            else:
+                comms_help.send_text(phone, message)
 
     firebase_storing.save_units_to_firebase(new_units)
     return {"message": "successful scrapage"}, 200
