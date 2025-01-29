@@ -13,29 +13,32 @@ load_dotenv()
 
 
 # Initialize Firebase if not already initialized
-if not firebase_admin._apps:
-    service_account_path = "serviceAccount.json"
-    if os.path.exists(service_account_path):
-        print("The serviceAccount.json file exists.")
-        cred = credentials.Certificate(service_account_path)
-        firebase_admin.initialize_app(cred)
-    else:
-        print("The serviceAccount.json file does not exist. Initializing from ENV")
-        # Retrieve the Firebase account details from the .env file
-        firebase_account = os.getenv('firebase_account')
-        if firebase_account:
-            # If the environment variable exists, initialize from it
-            try:
-                # Assuming firebase_account contains the JSON string for credentials
-                cred = credentials.Certificate(json.loads(firebase_account))
-                firebase_admin.initialize_app(cred)
-                print("Firebase initialized from ENV.")
-            except ValueError as e:
-                print(f"Error initializing Firebase from ENV: {e}")
+def get_google_creds():
+    if not firebase_admin._apps:
+        service_account_path = "serviceAccount.json"
+        if os.path.exists(service_account_path):
+            print("The serviceAccount.json file exists.")
+            cred = credentials.Certificate(service_account_path)
+            return cred
         else:
-            print("No firebase_account found in .env. Cannot initialize Firebase.")
+            print("The serviceAccount.json file does not exist. Initializing from ENV")
+            # Retrieve the Firebase account details from the .env file
+            firebase_account = os.getenv('firebase_account_2')
+            if firebase_account:
+                # If the environment variable exists, initialize from it
+                try:
+                    # Assuming firebase_account contains the JSON string for credentials
+                    cred = credentials.Certificate(json.loads(firebase_account))
+                    print("Firebase creds from ENV.")
+                    return cred
+                except ValueError as e:
+                    print(f"Error initializing creds from ENV: {e}")
+            else:
+                print("No firebase_account found in .env. Cannot initialize Firebase.")
 
 
+cred = get_google_creds()
+firebase_admin.initialize_app(cred)
 firebase_db_path = "/old_units"
 db = firestore.client()
 main_collection = db.collection("watermarq_system")

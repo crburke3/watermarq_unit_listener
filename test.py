@@ -1,5 +1,6 @@
-import os
-os.environ["is_dev"] = "true"
+from dotenv import load_dotenv
+load_dotenv()
+import queue_service
 import admin_functions
 import comms_help
 import firebase_storing
@@ -153,4 +154,7 @@ def test_send_message_to_all_subscribers():
             comms_help.send_text(user_phone, message)
 
 
-
+def test_queue_notification():
+    to_number = "+17048062009"
+    message = "testing future notification"
+    queue_service.queue_text_notification(phone_number=to_number, message=message, days_delay=0, seconds_delay=30)

@@ -1,14 +1,40 @@
 import comms_help
 import firebase_storing
 import helpers
+import queue_service
 import reception.primary_reception
 import sublease_handling
 from watching_service import run_watermarq_messaging
 from flask import request, jsonify
 from dotenv import load_dotenv
-
+from classes.FutureSMSRequest import FutureSMSRequest  # Import your dataclass
 
 load_dotenv()
+
+
+def schedule_sms(request):
+    """
+    This Cloud Function receives a JSON request containing
+    'to_number' and 'message' for a future SMS.
+    """
+    request_json = request.get_json(silent=True)
+
+    if request_json and 'data' in request_json:
+        try:
+            # Parse the JSON data into a FutureSMSRequest object
+            sms_request = FutureSMSRequest.from_json(request_json['data'])
+
+            # Access and use the data
+            to_number = sms_request.to_number
+            message = sms_request.message
+
+            return f"Scheduled SMS to {to_number} with message: {message}"
+
+        except (KeyError, ValueError) as e:
+            return f"Error parsing request: {e}", 400
+
+    else:
+        return "Invalid request format", 400
 
 
 def check_units(request):
@@ -21,6 +47,8 @@ def check_units(request):
         print(f"Request method: {request.method}")
         print(f"Request headers: {dict(request.headers)}")
         print(f"Request body: {request.get_data(as_text=True)}")
+        request_json = request.get_json(silent=True)
+        print(f"Request json: {request_json}")
     except Exception as e:
         print(f"Failed to parse body: {request}")
 
@@ -76,17 +104,28 @@ def check_units(request):
             return jsonify({"error": str(e)}), 401
 
 
-
     elif "remove_sublease" in request.url:
         try:
             unit_number = request.form.get("unit_number")
             sublease_handling.remove_sublease_unit(unit_number=unit_number)
+            return jsonify({"message": "success"}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 401
 
 
+    elif "process_sms" in request.url:
+        try:
+            request_json = request.get_json(silent=True)
+            if not request_json and 'data' in request_json and 'schedule_time' in request_json:
+                raise Exception("invalid data format")
+            sms_request = FutureSMSRequest.from_json(request_json['data'])
+            queue_service.process_sms(sms_request)
+            return jsonify({"message": "success"}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 401
 
-    else:
+
+    elif "run_listener" in request.url:
         latest_log = firebase_storing.get_most_recent_run_log()
         proxy_url = helpers.get_random_proxy_url()
         print(f"using proxy url: {proxy_url}")
@@ -104,4 +143,5 @@ def check_units(request):
             firebase_storing.save_run_log_to_firebase(successful=False, error=err_message, proxy=proxy_url)
             return {"error": err_message}, 400
 
-
+    else:
+        return {"message", f"unknown route: {request.url}"}, 400
