@@ -36,7 +36,7 @@ def add_sublease_unit(unit_number: str, subleaser_name: str, subleaser_phone_num
         if len(search_removed_units) == 0 and len(search_added_units) == 0 and len(search_price_changed_units) == 0:
             continue
         message = helpers.generate_message(search, search_removed_units, search_added_units, search_price_changed_units, price_changed_units_data, sublease=True)
-        comms_help.send_telegram_message("", message)
+        comms_help.send_telegram_message("", f"TO: {search.phones[0]}" + message)
         for phone in search.phones:
             comms_help.send_text(phone, message)
     return new_unit
