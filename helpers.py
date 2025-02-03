@@ -7,6 +7,7 @@ from RoomSearch import RoomSearch
 from Unit import Unit
 from typing import Set
 import random
+import re
 
 
 def compare_units(existing_units: Set[Unit], new_units: Set[Unit]):
@@ -150,12 +151,15 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
                     break
             if price_change_item:
                 # message += f"  old price: {price_change_item[1]}\n"
-                message += f"  new price: {price_change_item[2]}"
+                old_price = price_change_item[1]
+                new_price = price_change_item[2]
+                price_diff = price_difference(old_price, new_price)
+                message += f"  New price: {new_price} ({price_diff}"
                 dec_or_inc = price_change_item[3]
                 if dec_or_inc == 'increased':
-                    message += "🔺\n"
+                    message += "🔺)\n"
                 else:
-                    message += "💚\n"
+                    message += "💚)\n"
             message += "\n"
         message += "\n"
 
@@ -164,6 +168,25 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
 
     return message
 
+
+def price_difference(price1: str, price2: str) -> str:
+    """
+    Takes two price strings (e.g., "$4,900") and returns the difference as a formatted string.
+    """
+
+    # Convert price strings to integers
+    def parse_price(price):
+        return int(re.sub(r'[^0-9]', '', price))
+
+    value1 = parse_price(price1)
+    value2 = parse_price(price2)
+
+    # Calculate difference
+    diff = value2 - value1
+
+    # Format the output string
+    sign = '+' if diff >= 0 else '-'
+    return f"{sign}${abs(diff):,}"
 
 def unit_description(unit: Unit):
     desc = f"{unit.unit_number} | {unit.price}\n"
