@@ -9,6 +9,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import json
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
@@ -238,6 +239,28 @@ def save_before_and_after(before: list[Unit], after_removed: set[Unit], after_ad
         print(f"saved before and after: {doc_name}")
     except Exception as e:
         print(f"Failed to save before and after: {e}")
+
+
+def find_closest_run_log(target_datetime: datetime):
+    query = (
+       unit_change_collection
+            .where("timestamp", ">", target_datetime.strftime("%Y-%m-%dT%H:%M:%S.%f"))  # Filter for timestamps after target
+            .order_by("timestamp")  # Order by timestamp ascending
+            .limit(1)  # Get the first closest document
+    )
+
+    # Fetch the document
+    docs = query.stream()
+
+    # Get the first document if it exists
+    closest_doc = next(docs, None)
+
+    if closest_doc:
+        print(f"Document ID: {closest_doc.id}")
+        data = closest_doc.to_dict()
+        return data, closest_doc.id
+    else:
+        print("No document found with a timestamp after the given datetime.")
 
 #
 #

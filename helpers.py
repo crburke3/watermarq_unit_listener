@@ -80,7 +80,7 @@ def only_active_and_authorized_searches(searches: [RoomSearch]):
 
 def filter_units(search: RoomSearch, units: [Unit]):
     if not search.num_rooms:
-        raise Exception(f"Failed to filter units because search {search.phones} does not have num rooms")
+        return []
     search_units = set(filter(lambda unit: unit.num_rooms() in search.num_rooms, units))
     ret_units = set()
     if search.only_exterior:
@@ -226,6 +226,23 @@ def get_current_cst_date():
 
 
 def load_proxy_list() -> [str]:
+#     return [
+#         "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.166.29:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.169.117:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.92:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.97:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.112:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.113:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.116:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.117:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.117.118:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.167.209:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.170.107:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.90.37:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.170:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.58.211:a9iprakm5w98@brd.superproxy.io:33335",
+# "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-178.171.116.13:a9iprakm5w98@brd.superproxy.io:33335",
+#     ]
     return [
     "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.166.29:a9iprakm5w98@brd.superproxy.io:33335",
     "brd-customer-hl_ceb3d9f9-zone-datacenter_proxy1-ip-158.46.169.117:a9iprakm5w98@brd.superproxy.io:33335",

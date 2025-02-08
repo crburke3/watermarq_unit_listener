@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
 import helpers
+import main
 from RoomSearch import RoomSearch
 from RunLog import RunLog
 from Unit import Unit
@@ -14,9 +15,14 @@ import firebase_storing
 
 firebase_db_path = "/old_units"
 db = firestore.client()
-ref = db.collection("watermarq_system").document("search_changes_main").collection("search_changes").document("2025-01-24T13:00:24.878127")
-
+last_successful_time, options = firebase_storing.load_units_from_firebase()
+target_datetime = last_successful_time  # Replace with your timestamp
+search_doc, doc_name = firebase_storing.find_closest_run_log(target_datetime)
+ref = db.collection("watermarq_system").document("search_changes_main").collection("search_changes").document(doc_name)
 doc = ref.get()
+
+proxy_url = helpers.get_random_proxy_url()
+main.run_watermarq_messaging(None, proxy_url=proxy_url)
 
 if not doc.exists:
     print(f"Error: No data found at {firebase_db_path}.")
