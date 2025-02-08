@@ -153,13 +153,18 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
                 # message += f"  old price: {price_change_item[1]}\n"
                 old_price = price_change_item[1]
                 new_price = price_change_item[2]
-                price_diff = price_difference(old_price, new_price)
-                message += f"  New price: {new_price} ({price_diff}"
-                dec_or_inc = price_change_item[3]
-                if dec_or_inc == 'increased':
-                    message += "🔺)\n"
-                else:
-                    message += "💚)\n"
+                try:
+                    price_diff = price_difference(old_price, new_price)
+                    message += f"  New price: {new_price} ({price_diff}"
+                    dec_or_inc = price_change_item[3]
+                    if dec_or_inc == 'increased':
+                        message += "🔺)\n"
+                    else:
+                        message += "💚)\n"
+                except Exception as e:
+                    print(f"Error during price dif: {e}")
+                    message += ""
+
             message += "\n"
         message += "\n"
 
