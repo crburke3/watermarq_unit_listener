@@ -1,8 +1,12 @@
+import datetime
+
 import requests
 from dotenv import load_dotenv
 import os
 from twilio.rest import Client
 import time
+import supabase_storing
+from classes.SmsLog import SMSLog
 
 TWILIO_NUMBER = "+17042705208"
 CHRISTIANS_NUMBER = "+17048062009"
@@ -29,6 +33,7 @@ def send_telegram_message(number: str, message: str):
 
 def send_text(number: str, message: str, chunk_size: int = 800):
     print(f"sending text to {number}")
+
     try:
         # Split message into chunks respecting newlines
         message_chunks = []
@@ -60,9 +65,19 @@ def send_text(number: str, message: str, chunk_size: int = 800):
     except Exception as e:
         print(f"Failed to send text: {e}")
 
+
 def send_twillio_text(number: str, message: str):
     resp = twilio_client.messages.create(to=number, from_=TWILIO_NUMBER, body=message)
     print(f"[TEXT:Sent] {number} | {message} | {resp.sid} | {resp.status}")
+    successful = resp.error_message is None
+    sms_log = SMSLog(to_number=number,
+                     from_number=TWILIO_NUMBER,
+                     from_service="TWILLIO",
+                     message=message,
+                     successful=successful,
+                     timestamp=datetime.datetime.now()
+                     )
+    supabase_storing.insert_sms_log(sms_log)
 
 
 def send_message(number: str, message: str):

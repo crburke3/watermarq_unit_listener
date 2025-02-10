@@ -11,6 +11,8 @@ import helpers
 import main
 import sublease_handling
 from reception import primary_reception
+import supabase_storing
+from classes.SmsLog import SMSLog
 
 phone = '+17048062009'
 
@@ -169,3 +171,7 @@ def test_process_sms():
                                   actual_time=datetime.datetime.now())
     queue_service.process_sms(future_sms)
 
+
+def test_supabase_sms_insert():
+    log = SMSLog(to_number=phone, from_number=phone, from_service="test", message="test", successful=True, timestamp=datetime.datetime.now())
+    supabase_storing.insert_sms_log(log)

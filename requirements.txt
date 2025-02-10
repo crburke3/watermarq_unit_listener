@@ -8,3 +8,4 @@ Werkzeug==2.2.2
 Flask~=2.1.2
 google-cloud-functions
 google-cloud-tasks
+supabase
