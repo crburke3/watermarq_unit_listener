@@ -28,6 +28,7 @@ def send_telegram_message(number: str, message: str):
 
 
 def send_text(number: str, message: str, chunk_size: int = 800):
+    print(f"sending text to {number}")
     try:
         # Split message into chunks respecting newlines
         message_chunks = []
