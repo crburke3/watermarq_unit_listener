@@ -143,7 +143,7 @@ def generate_message(search: RoomSearch, removed_units, added_units, price_chang
     if len(price_changed_units) > 0:
         message += "the following units have had their prices changed 🤔\n\n"
         for price_unit in price_changed:
-            message += f"• {unit_description(price_unit)}"
+            message += f"• {unit_description(price_unit, simple=True)}"
             price_change_item = None
             for item in price_changed_units_data:
                 if item[0] == price_unit:
@@ -193,18 +193,25 @@ def price_difference(price1: str, price2: str) -> str:
     sign = '+' if diff >= 0 else '-'
     return f"{sign}${abs(diff):,}"
 
-def unit_description(unit: Unit):
+def unit_description(unit: Unit, simple=False):
     desc = f"{unit.unit_number} | {unit.price}\n"
-    desc += f"  Sublease 🤝\n" if unit.is_sublease else ""
-    desc += f"  Townhome 🏠\n" if unit.is_townhome() else ""
-    desc += f"  {unit.floor_plan_type}\n"
-    desc += f"  Availability: {unit.availability_date}\n"
-    desc += f"  Num Rooms: {unit.num_rooms()}\n" if unit.floor_plan_type else ""
-    desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else "  Not exterior facing"
-    desc += f"  Corner Unit 🥇\n" if unit.corner_type else ""
-    desc += f"  View Ranking: {int(unit.view_rank) * '⭐'}\n" if unit.view_rank else ""
-    desc += f"  View Facing: {unit.primary_exterior_face} {view_emoji(unit)}\n" if unit.primary_exterior_face else ""
-    desc += f"  Notes: {unit.notes}\n" if unit.notes else ""
+    if simple:
+        desc += f"  {unit.floor_plan_type}\n"
+        desc += f"  Availability: {unit.availability_date}\n"
+        desc += f"  Sublease 🤝\n" if unit.is_sublease else ""
+        desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else "  Not exterior facing"
+        desc += f"  View Facing: {unit.primary_exterior_face} {view_emoji(unit)}\n" if unit.primary_exterior_face else ""
+    else:
+        desc += f"  Sublease 🤝\n" if unit.is_sublease else ""
+        desc += f"  Townhome 🏠\n" if unit.is_townhome() else ""
+        desc += f"  {unit.floor_plan_type}\n"
+        desc += f"  Availability: {unit.availability_date}\n"
+        desc += f"  Num Rooms: {unit.num_rooms()}\n" if unit.floor_plan_type else ""
+        desc += f"  Exterior Facing 🪟\n" if unit.is_exterior_facing else "  Not exterior facing"
+        desc += f"  View Facing: {unit.primary_exterior_face} {view_emoji(unit)}\n" if unit.primary_exterior_face else ""
+        desc += f"  Corner Unit 🥇\n" if unit.corner_type else ""
+        desc += f"  View Ranking: {int(unit.view_rank) * '⭐'}\n" if unit.view_rank else ""
+        desc += f"  Notes: {unit.notes}\n" if unit.notes else ""
     return desc
 
 
