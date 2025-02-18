@@ -3,8 +3,8 @@ import firebase_storing
 import helpers
 import queue_service
 import web_calls as wc
-from RoomSearch import RoomSearch
-from Unit import Unit
+from classes.RoomSearch import RoomSearch
+from classes.Unit import Unit
 from typing import Set
 from datetime import datetime
 

@@ -1,8 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 import helpers
-from Unit import Unit
-import random
+from classes.Unit import Unit
 import requests
 
 

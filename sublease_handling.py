@@ -1,8 +1,8 @@
 import comms_help
 import firebase_storing
 import helpers
-from RoomSearch import RoomSearch
-from Unit import Unit
+from classes.RoomSearch import RoomSearch
+from classes.Unit import Unit
 
 
 def add_sublease_unit(unit_number: str, subleaser_name: str, subleaser_phone_number: str, price: str, availability_date:str, floor_plan_type: str, notes: str = None) -> Unit:

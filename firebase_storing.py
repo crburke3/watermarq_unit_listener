@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import List
 import helpers
-from RoomSearch import RoomSearch, UnitInterest
-from RunLog import RunLog
-from Unit import Unit
+from classes.RoomSearch import RoomSearch, UnitInterest
+from classes.RunLog import RunLog
+from classes.Unit import Unit
 import os
 import firebase_admin
 from firebase_admin import credentials, firestore
